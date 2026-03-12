@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::title},~{::body})}">
+
+<head>
+<title>Booking Confirmed</title>
+</head>
+
+<body>
+
+<div class="text-center mt-5">
+
+<h1 class="text-success fw-bold">
+<i class="fas fa-check-circle"></i> Booking Confirmed!
+</h1>
+
+<p class="lead">
+Your trip to <strong th:text="${place}">Place</strong> is booked successfully.
+</p>
+
+<p>
+Trip ID: <strong th:text="${tripId}">TRV1001</strong>
+</p>
+
+<a th:href="@{/home}" class="btn btn-primary mt-3">
+<i class="fas fa-home"></i> Back to Home
+</a>
+
+</div>
+
+</body>
+</html>

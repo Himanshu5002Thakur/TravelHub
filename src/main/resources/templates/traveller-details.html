@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::title},~{::body})}">
+
+<head>
+<title>Traveller Details</title>
+</head>
+
+<body>
+
+<div class="text-center mb-4">
+<h1 class="text-primary fw-bold">
+<i class="fas fa-user"></i> Traveller Details
+</h1>
+<p class="text-muted">
+Please fill in your details to confirm the booking for <strong th:text="${place}">Place</strong>
+</p>
+</div>
+
+<div class="row justify-content-center">
+<div class="col-md-6">
+
+<div class="card shadow border-0">
+<div class="card-body p-4">
+
+<form th:action="@{/booking-confirm}" method="post">
+<input type="hidden" name="place" th:value="${place}">
+
+<input type="text" name="name" class="form-control mb-3" placeholder="Full Name" required>
+<input type="email" name="email" class="form-control mb-3" placeholder="Email" required>
+<input type="tel" name="phone" class="form-control mb-3" placeholder="Phone Number" required>
+<input type="number" name="people" class="form-control mb-3" placeholder="Number of People" required>
+<input type="date" name="date" class="form-control mb-3" required>
+
+<button class="btn btn-success w-100 mb-2">
+<i class="fas fa-check"></i> Confirm Booking
+</button>
+
+<a th:href="@{/home}" class="btn btn-outline-secondary w-100 mt-2">
+Back to Home
+</a>
+
+</form>
+</div>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+th:replace="~{base :: layout(~{::title},~{::body})}">
+
+<head>
+<title>Login</title>
+</head>
+
+<body>
+
+<div class="row justify-content-center">
+
+<div class="col-md-5">
+
+<div class="card shadow border-0">
+
+<div class="card-body p-4">
+
+<h2 class="text-center mb-4 text-primary">
+<i class="fas fa-user-circle"></i> Login
+</h2>
+
+<form th:action="@{/login}" method="post">
+
+<div class="mb-3">
+
+<label class="form-label">Username</label>
+
+<input type="text"
+name="username"
+class="form-control"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label">Password</label>
+
+<input type="password"
+name="password"
+class="form-control"
+required>
+
+</div>
+
+<button type="submit"
+class="btn btn-primary w-100">
+Login
+</button>
+
+</form>
+
+<div th:if="${param.error}" class="alert alert-danger mt-3">
+Invalid username or password
+</div>
+
+<div th:if="${param.logout}" class="alert alert-success mt-3">
+Logged out successfully
+</div>
+
+<p class="text-center mt-3">
+Don't have an account?
+<a th:href="@{/signup}">Create one</a>
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
