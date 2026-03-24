@@ -333,12 +333,6 @@ TravelHub
 - [ ] Load testing and performance monitoring
 - [ ] API rate limiting and security hardening
 
-### Phase 6: Mobile App
-- [ ] React Native or Flutter mobile application
-- [ ] Push notifications
-- [ ] Offline booking confirmation viewing
-- [ ] Integrated payment on mobile
-
 ---
 
 ## Troubleshooting
@@ -387,7 +381,3 @@ Issues and pull requests are welcome! To contribute:
 5. Open a pull request
 
 ---
-
-**Last Updated:** March 24, 2026  
-**Maintainer:** [Your Name]  
-**Questions?** Open an issue or contact via the Contact page.
