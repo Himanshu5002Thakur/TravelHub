@@ -1,32 +1,57 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{base :: layout(~{::title},~{::body})}">
-
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::title},~{::body})}">
 <head>
-<title>Booking Confirmed</title>
+    <title>Booking Success | TravelHub</title>
 </head>
-
 <body>
+<div class="success-page">
+    <div class="container py-4 pb-5">
+        <div class="success-shell mx-auto text-center">
+            <div class="success-icon-wrap">
+                <i class="fas fa-check"></i>
+            </div>
 
-<div class="text-center mt-5">
+            <p class="success-kicker">Trip Confirmed</p>
+            <h1 class="success-title">Booking Completed Successfully</h1>
+            <p class="success-subtitle">
+                Thank you, <strong th:text="${booking.travellerName}">Traveler</strong>. Your premium journey is now reserved.
+            </p>
 
-<h1 class="text-success fw-bold">
-<i class="fas fa-check-circle"></i> Booking Confirmed!
-</h1>
+            <div class="success-meta-card">
+                <div class="row g-3 text-start text-md-center">
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Trip ID</small>
+                        <strong th:text="${booking.tripId}">TRV-XXXXXXX</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Destination</small>
+                        <strong th:text="${booking.placeName}">Destination</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Travel Date</small>
+                        <strong th:text="${booking.travelDate}">2026-01-01</strong>
+                    </div>
+                </div>
+            </div>
 
-<p class="lead">
-Your trip to <strong th:text="${place}">Place</strong> is booked successfully.
-</p>
+            <div class="price-chip mt-3 mb-4">
+                Total Paid: $<span th:text="${booking.totalPrice}">399</span>
+            </div>
 
-<p>
-Trip ID: <strong th:text="${tripId}">TRV1001</strong>
-</p>
+            <p class="text-muted mb-4">
+                Your itinerary details are saved in My Bookings. We will contact you shortly with final travel guidance.
+            </p>
 
-<a th:href="@{/home}" class="btn btn-primary mt-3">
-<i class="fas fa-home"></i> Back to Home
-</a>
-
+            <div class="d-flex flex-column flex-md-row justify-content-center gap-2">
+                <a th:href="@{/my-bookings}" class="btn btn-primary rounded-pill px-4">
+                    View My Bookings
+                </a>
+                <a th:href="@{/home}" class="btn btn-outline-secondary rounded-pill px-4">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
-
 </body>
 </html>

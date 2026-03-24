@@ -3,82 +3,190 @@
       th:replace="~{base :: layout(~{::title},~{::body})}">
 
 <head>
-<title th:text="${country} + ' Destinations'">Country</title>
+    <title th:text="${country} + ' Destinations'">Country Destinations</title>
+    <style>
+        .country-hero {
+            margin: 28px 0 26px;
+            padding: 42px 24px;
+            border-radius: 24px;
+            background:
+                linear-gradient(120deg, rgba(11, 24, 46, 0.82), rgba(13, 110, 253, 0.58)),
+                url('/images/travel-banner.jpg') center/cover no-repeat;
+            color: #fff;
+            box-shadow: 0 20px 45px rgba(9, 27, 57, 0.24);
+        }
+
+        .country-hero h1 {
+            font-size: clamp(1.9rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .country-hero p {
+            margin-bottom: 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .country-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            margin-bottom: 14px;
+        }
+
+        .destination-card {
+            border: 0;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #fff;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 45px rgba(15, 23, 42, 0.18);
+        }
+
+        .destination-thumb {
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .destination-thumb img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.45s ease;
+        }
+
+        .destination-card:hover .destination-thumb img {
+            transform: scale(1.08);
+        }
+
+        .rating-pill {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.94);
+            color: #111827;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+
+        .price-pill {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 2px;
+            border-radius: 999px;
+            background: #edf4ff;
+            color: #0b3f8a;
+            font-weight: 700;
+            padding: 5px 11px;
+            font-size: 0.88rem;
+        }
+
+        .empty-state {
+            background: #fff;
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px dashed rgba(100, 116, 139, 0.4);
+            text-align: center;
+        }
+
+        .destination-card .card-body {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .destination-card .btn {
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .destination-thumb {
+                height: 220px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+<div class="country-page">
+<div class="container py-4 pb-5">
+    <section class="country-hero text-center">
+        <div class="country-chip">
+            <i class="fas fa-map-marked-alt"></i>
+            Explore Collection
+        </div>
+        <h1>Top Places in <span th:text="${country}">Country</span></h1>
+        <p>Handpicked destinations with premium stays, guided tours, and smooth booking.</p>
+    </section>
 
-<!-- TITLE SECTION -->
+    <section class="mb-4" th:if="${#lists.isEmpty(places)}">
+        <div class="empty-state">
+            <h5 class="fw-bold mb-2">No places found right now</h5>
+            <p class="text-muted mb-3">Please try another country or check back soon for new curated destinations.</p>
+            <a th:href="@{/home}" class="btn btn-primary rounded-pill px-4">Back to Home</a>
+        </div>
+    </section>
 
-<div class="row mb-4">
+    <section class="row g-4" th:if="${!#lists.isEmpty(places)}">
+        <div th:each="place : ${places}" class="col-sm-6 col-xl-3">
+            <div class="destination-card card">
+                <div class="destination-thumb">
+                    <img th:src="@{'/images/' + ${place.name.toLowerCase().replace(' ','')} + '.jpg'}"
+                         onerror="this.onerror=null;this.src='/images/travel-banner.jpg';"
+                         alt="Destination image">
+                    <span class="rating-pill">
+                        <i class="fas fa-star text-warning me-1"></i>
+                        <span th:text="${place.rating}">4.9</span>
+                    </span>
+                </div>
 
-<div class="col-12 text-center">
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bold mb-2" th:text="${place.name}">Place Name</h5>
+                    <p class="text-muted small mb-3">Popular for scenic views, local food and immersive experiences.</p>
 
-<h1 class="text-success fw-bold">
-<i class="fas fa-map"></i>
-Top Places in <span th:text="${country}"></span>
-</h1>
+                    <div class="mb-3">
+                        <span class="price-pill">
+                            $<span th:text="${place.price}">399</span>
+                            <small class="text-muted ms-1">per person</small>
+                        </span>
+                    </div>
 
-<p class="text-muted">
-Discover amazing destinations and travel packages.
-</p>
+                    <a th:href="@{/place/{id}(id=${place.name})}" class="btn btn-primary w-100 rounded-pill fw-semibold">
+                        View Itinerary <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <div class="text-center mt-4">
+        <a th:href="@{/home}" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="fas fa-arrow-left me-1"></i> Back to Home
+        </a>
+    </div>
 </div>
-
 </div>
-
-
-<!-- PLACES -->
-
-<div class="row g-4">
-
-<div th:each="place : ${places}" class="col-md-3">
-
-<div class="card h-100 shadow border-0">
-
-<!-- IMAGE -->
-
-<img th:src="@{'/images/' + ${place.toLowerCase().replace(' ','')} + '.jpg'}"
-     class="card-img-top"
-     style="height:180px; object-fit:cover;">
-
-<div class="card-body text-center">
-
-<h5 class="fw-bold" th:text="${place}"></h5>
-
-<p class="text-muted small">
-View tour packages and travel plans.
-</p>
-
-<a th:href="@{/place/{id}(id=${place})}"
-   class="btn btn-success w-100">
-
-<i class="fas fa-suitcase-rolling"></i>
-View Packages
-
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- BACK BUTTON -->
-
-<div class="text-center mt-5">
-
-<a th:href="@{/home}" class="btn btn-outline-secondary">
-
-<i class="fas fa-arrow-left"></i>
-Back to Home
-
-</a>
-
-</div>
-
 </body>
 </html>

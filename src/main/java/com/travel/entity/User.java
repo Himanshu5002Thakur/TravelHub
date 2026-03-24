@@ -2,6 +2,7 @@ package com.travel.entity;
 
 import jakarta.persistence.*;
 import java.util.Objects;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -28,6 +29,9 @@ public class User {
         this.password = password;
         this.email = email;
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 
     // Getters and Setters
     public Long getId() { return id; }

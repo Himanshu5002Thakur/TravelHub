@@ -3,133 +3,269 @@
       th:replace="~{base :: layout(~{::title},~{::body})}">
 
 <head>
-<title th:text="${place} + ' Packages'">Packages</title>
+    <title th:text="${placeName} + ' Premium Itinerary'">Place Itinerary</title>
+    <style>
+        .place-hero {
+            margin: 28px 0 24px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 24px 50px rgba(15, 23, 42, 0.22);
+            position: relative;
+        }
+
+        .place-hero img {
+            width: 100%;
+            height: 470px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .place-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(9, 19, 39, 0.84), rgba(9, 19, 39, 0.18));
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 34px;
+            color: #fff;
+        }
+
+        .hero-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            margin-bottom: 12px;
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            padding: 7px 12px;
+        }
+
+        .hero-overlay h1 {
+            font-size: clamp(1.8rem, 4vw, 3.2rem);
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .hero-overlay p {
+            max-width: 620px;
+            margin-bottom: 0;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        .quick-stat {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            padding: 14px;
+            text-align: center;
+            height: 100%;
+        }
+
+        .quick-stat i {
+            color: #0d6efd;
+            margin-bottom: 8px;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            border-radius: 16px;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+        }
+
+        .itinerary-panel {
+            padding: 20px;
+        }
+
+        .itinerary-content {
+            white-space: pre-wrap;
+            font-family: inherit;
+            margin-bottom: 0;
+            color: #334155;
+            line-height: 1.75;
+        }
+
+        .book-panel {
+            position: sticky;
+            top: 95px;
+            padding: 22px;
+        }
+
+        .book-price {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #198754;
+            line-height: 1;
+        }
+
+        .check-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+        }
+
+        .check-list li {
+            margin-bottom: 10px;
+            color: #475569;
+        }
+
+        .check-list li i {
+            color: #198754;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 992px) {
+            .place-hero img {
+                height: 390px;
+            }
+
+            .book-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-overlay {
+                padding: 22px;
+            }
+
+            .place-hero img {
+                height: 340px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+<div class="place-page">
+<div class="container py-4 pb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>
+            <li class="breadcrumb-item" th:if="${country != null}">
+                <a th:href="@{/country/{country}(country=${country})}" th:text="${country}">Country</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${placeName}">Place</li>
+        </ol>
+    </nav>
 
-<!-- PAGE TITLE -->
+    <section class="place-hero">
+        <img th:src="@{'/images/' + ${placeName.toLowerCase().replace(' ','')} + '.jpg'}"
+             onerror="this.onerror=null;this.src='/images/travel-banner.jpg';"
+             alt="Destination image">
+        <div class="hero-overlay">
+            <span class="hero-chip"><i class="fas fa-crown"></i> Premium itinerary</span>
+            <h1 th:text="${placeName}">Destination</h1>
+            <p>A curated travel experience with iconic highlights, smooth logistics and memorable stays.</p>
+        </div>
+    </section>
 
-<div class="row mb-4">
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="quick-stat">
+                <i class="fas fa-clock fa-lg"></i>
+                <div class="small text-muted">Duration</div>
+                <strong>5 Days</strong>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="quick-stat">
+                <i class="fas fa-users fa-lg"></i>
+                <div class="small text-muted">Group Size</div>
+                <strong>Up to 15</strong>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="quick-stat">
+                <i class="fas fa-language fa-lg"></i>
+                <div class="small text-muted">Language</div>
+                <strong>English</strong>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="quick-stat">
+                <i class="fas fa-shield-check fa-lg"></i>
+                <div class="small text-muted">Trust Score</div>
+                <strong>Verified</strong>
+            </div>
+        </div>
+    </div>
 
-<div class="col-12 text-center">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="panel itinerary-panel mb-4">
+                <h4 class="fw-bold mb-3">Day-by-Day Itinerary</h4>
+                <pre class="itinerary-content" th:text="${place != null ? place.itinerary : 'No itinerary details found for this destination.'}">
+Loading itinerary...
+                </pre>
+            </div>
 
-<h1 class="text-info fw-bold">
-<i class="fas fa-suitcase-rolling"></i>
-Tour Packages for <span th:text="${place}"></span>
-</h1>
+            <div class="panel p-4">
+                <h5 class="fw-bold mb-3">What's Included</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <ul class="check-list">
+                            <li><i class="fas fa-check-circle"></i> 4-star or better hotel stay</li>
+                            <li><i class="fas fa-check-circle"></i> Daily breakfast and welcome meal</li>
+                            <li><i class="fas fa-check-circle"></i> Airport pickup and drop</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="check-list">
+                            <li><i class="fas fa-check-circle"></i> Local guide for major attractions</li>
+                            <li><i class="fas fa-check-circle"></i> Comfortable city transfers</li>
+                            <li><i class="fas fa-check-circle"></i> Priority support during travel</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<p class="text-muted">
-Discover exciting travel plans and itineraries.
-</p>
+        <div class="col-lg-4">
+            <aside class="panel book-panel">
+                <p class="text-uppercase text-muted small mb-1">Package Price</p>
+                <div class="book-price">$<span th:text="${place != null ? place.price : '399'}">399</span></div>
+                <p class="text-muted small">Per person, inclusive of standard taxes</p>
 
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="text-warning">
+                        <i class="fas fa-star" th:each="i : ${#numbers.sequence(1, (place != null ? place.rating.intValue() : 5))}"></i>
+                    </div>
+                    <strong th:text="${place != null ? place.rating : '5.0'}">5.0</strong>
+                </div>
+
+                <a th:href="@{/booking/traveller/{name}(name=${placeName})}" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold mb-3 continue-booking-btn">
+                    Continue to Booking <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+
+                <p class="small text-muted mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Free cancellation up to 72 hours before departure.
+                </p>
+            </aside>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a th:href="${country != null ? '/country/' + country : '/home'}" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="fas fa-arrow-left me-1"></i> Back
+        </a>
+    </div>
 </div>
-
 </div>
-
-
-<!-- DESTINATION IMAGE -->
-
-<div class="row mb-4">
-
-<div class="col-md-12">
-
-<img th:src="@{'/images/' + ${place.toLowerCase().replace(' ','')} + '.jpg'}"
-     class="img-fluid rounded shadow"
-     style="width:100%; max-height:350px; object-fit:cover;">
-
-</div>
-
-</div>
-
-
-<!-- PACKAGE DETAILS -->
-
-<div class="row g-4">
-
-<!-- ITINERARY -->
-
-<div class="col-md-8">
-
-<div class="card shadow border-0">
-
-<div class="card-header bg-info text-white">
-
-<h5 class="mb-0">
-<i class="fas fa-calendar-alt"></i>
-Travel Itinerary
-</h5>
-
-</div>
-
-<div class="card-body">
-
-<pre style="white-space:pre-wrap; font-family:inherit;"
-     th:text="${packageContent}">
-Package details...
-</pre>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- PRICE / BOOKING -->
-
-<div class="col-md-4">
-
-<div class="card shadow border-0">
-
-<div class="card-header bg-success text-white text-center">
-
-<h5 class="mb-0">
-<i class="fas fa-tags"></i>
-Special Offer
-</h5>
-
-</div>
-
-<div class="card-body text-center">
-
-<h3 class="text-success fw-bold">
-$399
-</h3>
-
-<p class="text-muted">
-Per Person
-</p>
-
-<div class="mb-3 text-warning">
-
-<i class="fas fa-star"></i>
-<i class="fas fa-star"></i>
-<i class="fas fa-star"></i>
-<i class="fas fa-star"></i>
-<i class="fas fa-star-half-alt"></i>
-
-</div>
-
-<a th:href="@{/booking/traveller/{place}(place=${place})}"
-   class="btn btn-warning w-100 mb-2">
-<i class="fas fa-bookmark"></i> Book Now
-</a>
-
-<a th:href="@{/home}" class="btn btn-outline-secondary w-100">
-
-<i class="fas fa-arrow-left"></i>
-Back to Home
-
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </body>
 </html>

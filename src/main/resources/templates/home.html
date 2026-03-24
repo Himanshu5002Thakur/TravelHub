@@ -3,82 +3,588 @@
       th:replace="~{base :: layout(~{::title},~{::body})}">
 
 <head>
-<title>TravelHub | Home</title>
+    <title>TravelHub | Premium Destinations</title>
+    <style>
+        :root {
+            --ink: #0b1220;
+            --sand: #f8f4ec;
+            --ocean: #0f4c81;
+            --sun: #f0a500;
+            --cloud: #f4f8ff;
+            --muted: #5d6576;
+            --card-shadow: 0 22px 44px rgba(11, 18, 32, 0.1);
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 10% 5%, rgba(240, 165, 0, 0.14), transparent 30%),
+                radial-gradient(circle at 92% 12%, rgba(15, 76, 129, 0.18), transparent 35%),
+                var(--sand);
+            color: var(--ink);
+        }
+
+        .hero-section {
+            min-height: 460px;
+            padding: 92px 0 70px;
+            background:
+                linear-gradient(120deg, rgba(11, 18, 32, 0.78), rgba(15, 76, 129, 0.58)),
+                url('/images/travel-banner.jpg') center/cover no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border-radius: 999px;
+            right: -80px;
+            top: -100px;
+            background: rgba(240, 165, 0, 0.2);
+            filter: blur(4px);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            color: #fff;
+        }
+
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            padding: 8px 16px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(8px);
+        }
+
+        .hero-title {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 800;
+            line-height: 1.08;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            max-width: 700px;
+            margin: 0 auto 28px;
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        .search-shell {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 12px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.32);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .search-shell .form-control {
+            border: 0;
+            border-radius: 14px;
+            min-height: 50px;
+        }
+
+        .search-shell .btn {
+            min-height: 50px;
+            border-radius: 14px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            background: var(--sun);
+            border: 0;
+            color: #212529;
+        }
+
+        .news-ticker {
+            background: #fff;
+            border-top: 1px solid rgba(11, 18, 32, 0.07);
+            border-bottom: 1px solid rgba(11, 18, 32, 0.07);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .news-ticker-track {
+            display: inline-block;
+            padding: 13px 0;
+            animation: ticker-scroll 24s linear infinite;
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        .news-ticker-track span {
+            margin: 0 28px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        @keyframes ticker-scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        #popularPlacesCarousel {
+            margin: 36px auto 70px;
+            width: min(95%, 1240px);
+            border-radius: 26px;
+            overflow: hidden;
+            box-shadow: 0 34px 65px rgba(11, 18, 32, 0.22);
+            background: #000;
+        }
+
+        .carousel-item {
+            position: relative;
+            min-height: 560px;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 560px;
+            object-fit: cover;
+            transform: scale(1);
+            transition: transform 8s ease;
+        }
+
+        .carousel-item.active img {
+            transform: scale(1.09);
+        }
+
+        .carousel-item::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11, 18, 32, 0.85), rgba(11, 18, 32, 0.1));
+        }
+
+        .carousel-caption {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+            text-align: left;
+            padding: 0 8vw 70px;
+        }
+
+        .carousel-caption h2 {
+            font-size: clamp(1.8rem, 4vw, 3.3rem);
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .carousel-caption p {
+            max-width: 620px;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.94);
+        }
+
+        .slide-chip {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            color: #fff;
+        }
+
+        .slider-cta {
+            border-radius: 999px;
+            padding: 10px 22px;
+            font-weight: 700;
+            border: 0;
+            background: var(--sun);
+            color: #232b34;
+            text-decoration: none;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 7%;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        #popularPlacesCarousel:hover .carousel-control-prev,
+        #popularPlacesCarousel:hover .carousel-control-next {
+            opacity: 1;
+        }
+
+        .section-head {
+            margin-bottom: 22px;
+        }
+
+        .section-kicker {
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 0.76rem;
+            color: var(--ocean);
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+            font-weight: 800;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .section-note {
+            color: var(--muted);
+            margin-bottom: 0;
+        }
+
+        .feature-card {
+            background: #fff;
+            border-radius: 20px;
+            height: 100%;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .feature-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 14px;
+            background: linear-gradient(140deg, #edf4ff, #fff8e5);
+            color: var(--ocean);
+        }
+
+        .destination-card {
+            border: 0;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            background: #fff;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .destination-thumb {
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .destination-thumb img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.45s ease;
+        }
+
+        .destination-card:hover .destination-thumb img {
+            transform: scale(1.08);
+        }
+
+        .rating-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.93);
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .destination-card .card-body {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .destination-card .btn {
+            margin-top: auto;
+        }
+
+        .fade-on-load {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .fade-on-load.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 992px) {
+            .carousel-item,
+            .carousel-item img {
+                min-height: 470px;
+                height: 470px;
+            }
+
+            .carousel-caption {
+                padding: 0 6vw 46px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 400px;
+                padding: 70px 0 50px;
+            }
+
+            .search-shell {
+                border-radius: 14px;
+            }
+
+            .search-shell form {
+                gap: 10px;
+            }
+
+            .search-shell .btn {
+                width: 100%;
+            }
+
+            .carousel-item,
+            .carousel-item img {
+                min-height: 420px;
+                height: 420px;
+            }
+
+            .carousel-caption {
+                align-items: center;
+                text-align: center;
+                padding: 0 5vw 34px;
+            }
+
+            .destination-thumb {
+                height: 220px;
+            }
+        }
+
+        @media (hover: none) {
+            .carousel-control-prev,
+            .carousel-control-next {
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 
 <body>
+<div class="home-page">
+<div class="hero-section text-center">
+    <div class="container hero-content">
+        <div class="hero-pill">
+            <i class="fas fa-gem"></i>
+            Signature travel experiences
+        </div>
 
-<!-- HERO SECTION -->
+        <h1 class="hero-title">Premium Journeys, Built Around You</h1>
+        <p class="hero-subtitle">
+            Curated itineraries, verified stays, and expert guides across India, USA, Canada and beyond.
+            Start your next unforgettable trip in seconds.
+        </p>
 
-<div class="p-5 mb-5 text-center bg-dark text-white rounded shadow"
-     style="background:url('/images/travel-banner.jpg') center/cover no-repeat; min-height:300px; display:flex; align-items:center; justify-content:center;">
-
-<div style="background:rgba(0,0,0,0.5); padding:30px; border-radius:10px;">
-
-<h1 class="display-4 fw-bold">
-<i class="fas fa-plane-departure"></i> TravelHub
-</h1>
-
-<p class="lead">
-Discover the world’s most beautiful destinations.
-</p>
-
+        <div class="search-shell">
+            <form th:action="@{/home}" method="get" class="row g-2">
+                <div class="col-12 col-md-9">
+                    <input type="text" name="location" class="form-control"
+                           th:value="${param.location}"
+                           placeholder="Where do you want to go? e.g. Kashmir, New York">
+                </div>
+                <div class="col-12 col-md-3">
+                    <button type="submit" class="btn w-100">
+                        Search Trips <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
+<div class="news-ticker" aria-label="Latest travel offers">
+    <div class="news-ticker-track">
+        Limited time offers <span>•</span> Free airport pickup on selected packages <span>•</span>
+        Summer Europe sale up to 25% off <span>•</span> Instant booking confirmation <span>•</span>
+        Limited time offers <span>•</span> Free airport pickup on selected packages <span>•</span>
+        Summer Europe sale up to 25% off <span>•</span> Instant booking confirmation <span>•</span>
+    </div>
 </div>
 
+<div id="popularPlacesCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-touch="true" data-bs-interval="3500" data-bs-pause="false">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#popularPlacesCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#popularPlacesCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#popularPlacesCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
 
-<!-- COUNTRIES -->
+    <div class="carousel-inner">
+        <div class="carousel-item active" data-bs-interval="3500">
+            <img src="/images/india-banner.jpg" alt="Taj Mahal, India">
+            <div class="carousel-caption text-white">
+                <span class="slide-chip">Most Loved Destination</span>
+                <h2>Taj Mahal, India</h2>
+                <p>Experience timeless heritage with royal stays, guided city tours and local cuisine trails.</p>
+                <a th:href="@{/country/{country}(country='India')}" class="slider-cta">View India Packages</a>
+            </div>
+        </div>
 
-<div class="row mb-4">
+        <div class="carousel-item" data-bs-interval="3500">
+            <img src="/images/us-banner.jpg" alt="New York City, USA">
+            <div class="carousel-caption text-white">
+                <span class="slide-chip">Urban Signature Escape</span>
+                <h2>New York City, USA</h2>
+                <p>From Times Square lights to skyline cruises, discover premium city life at full speed.</p>
+                <a th:href="@{/country/{country}(country='US')}" class="slider-cta">Explore NYC</a>
+            </div>
+        </div>
 
-<div class="col-12 text-center">
+        <div class="carousel-item" data-bs-interval="3500">
+            <img src="/images/canada-banner.jpg" alt="Banff, Canada">
+            <div class="carousel-caption text-white">
+                <span class="slide-chip">Scenic Luxury Route</span>
+                <h2>Banff, Canada</h2>
+                <p>Turquoise lakes, alpine trails and boutique mountain resorts in one stunning itinerary.</p>
+                <a th:href="@{/country/{country}(country='Canada')}" class="slider-cta">Visit Canada</a>
+            </div>
+        </div>
+    </div>
 
-<h2 class="text-primary fw-bold">
-<i class="fas fa-globe"></i> Choose Your Destination
-</h2>
-
-<p class="text-muted">
-Select a country and explore amazing places.
-</p>
-
+    <button class="carousel-control-prev" type="button" data-bs-target="#popularPlacesCarousel" data-bs-slide="prev" aria-label="Previous slide">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#popularPlacesCarousel" data-bs-slide="next" aria-label="Next slide">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
 </div>
 
-</div>
+<section class="container mb-5 fade-on-load">
+    <div class="section-head text-center mb-4">
+        <p class="section-kicker">Why TravelHub</p>
+        <h3 class="section-title">Premium Service at Every Step</h3>
+        <p class="section-note">Designed for travelers who want comfort, speed, and memorable experiences.</p>
+    </div>
 
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-utensils fa-lg"></i>
+                </div>
+                <h5 class="fw-bold">Curated Dining</h5>
+                <p class="text-muted mb-0">Local specialties plus premium food plans are integrated into top itineraries.</p>
+            </div>
+        </div>
 
-<div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt fa-lg"></i>
+                </div>
+                <h5 class="fw-bold">Secure Booking</h5>
+                <p class="text-muted mb-0">Verified partners, transparent pricing, and fast confirmation for peace of mind.</p>
+            </div>
+        </div>
 
-<div th:each="country : ${countries}" class="col-md-3">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-headset fa-lg"></i>
+                </div>
+                <h5 class="fw-bold">Expert Assistance</h5>
+                <p class="text-muted mb-0">Get local insights and 24/7 support from experienced travel specialists.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-<div class="card h-100 shadow border-0">
+<section class="container pb-4 fade-on-load">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+        <div>
+            <p class="section-kicker mb-1">Handpicked</p>
+            <h3 class="section-title mb-1">Popular Destinations</h3>
+            <p class="section-note">Choose from our best-performing countries and start exploring now.</p>
+        </div>
+    </div>
 
-<!-- IMAGE -->
+    <div class="row g-4">
+        <div th:each="country : ${countries}" class="col-sm-6 col-lg-3">
+            <div class="destination-card card">
+                <div class="destination-thumb">
+                    <img th:src="@{'/images/' + ${country.toLowerCase().replace(' ','')} + '.jpg'}"
+                         onerror="this.onerror=null;this.src='/images/travel-banner.jpg';"
+                         alt="Destination image">
+                    <span class="rating-badge">
+                        <i class="fas fa-star text-warning"></i> 4.9
+                    </span>
+                </div>
 
-<img th:src="@{'/images/' + ${country.toLowerCase()} + '.jpg'}"
-     class="card-img-top"
-     style="height:180px; object-fit:cover;">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-2" th:text="${country}">Country</h5>
+                    <p class="text-muted small mb-3">Custom tours, comfortable stays, and memorable local experiences.</p>
+                    <a th:href="@{/country/{id}(id=${country})}" class="btn btn-primary w-100 rounded-pill fw-semibold">
+                        Explore Packages
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<div class="card-body text-center">
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var carouselElement = document.getElementById('popularPlacesCarousel');
 
-<h5 class="fw-bold" th:text="${country}">Country</h5>
+        if (carouselElement && window.bootstrap && window.bootstrap.Carousel) {
+            new bootstrap.Carousel(carouselElement, {
+                interval: 3500,
+                ride: 'carousel',
+                pause: false,
+                wrap: true,
+                touch: true
+            });
+        }
 
-<p class="text-muted small">
-Explore top destinations and tour packages.
-</p>
-
-<a th:href="@{/country/{id}(id=${country})}"
-   class="btn btn-primary w-100">
-
-<i class="fas fa-compass"></i> Explore
-
-</a>
-
-</div>
-
-</div>
-
-</div>
+        var revealItems = document.querySelectorAll('.fade-on-load');
+        revealItems.forEach(function (item, index) {
+            setTimeout(function () {
+                item.classList.add('visible');
+            }, 120 * index);
+        });
+    });
+</script>
 
 </div>
 

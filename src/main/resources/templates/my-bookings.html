@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::title},~{::body})}">
+<head>
+    <title>My Bookings | TravelHub</title>
+</head>
+<body>
+<div class="bookings-page">
+    <div class="container py-4 pb-5">
+        <div class="bookings-hero">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <p class="bookings-kicker mb-1">Your Travel Desk</p>
+                    <h2 class="bookings-title mb-1"><i class="fas fa-history me-2"></i>My Bookings</h2>
+                    <p class="bookings-subtitle mb-0">Track upcoming trips, view details, and manage cancellations.</p>
+                </div>
+                <a th:href="@{/home}" class="btn btn-primary rounded-pill px-4">
+                    Book New Trip
+                </a>
+            </div>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-1"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="bookings-table-wrap" th:if="${!#lists.isEmpty(bookings)}">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">Trip ID</th>
+                        <th>Destination</th>
+                        <th>Date</th>
+                        <th>Transport</th>
+                        <th>Total</th>
+                        <th class="text-center pe-4">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="b : ${bookings}">
+                        <td class="ps-4 fw-semibold text-primary" th:text="${b.tripId}">TRV-XXXXXXX</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="destination-dot"></span>
+                                <span th:text="${b.placeName}">Destination</span>
+                            </div>
+                        </td>
+                        <td th:text="${b.travelDate}">2026-01-01</td>
+                        <td>
+                            <span class="badge transport-badge" th:text="${b.transportType}">Bus</span>
+                        </td>
+                        <td class="fw-bold text-success">$<span th:text="${b.totalPrice}">399</span></td>
+                        <td class="text-center pe-4">
+                            <a th:href="@{/booking/cancel/{id}(id=${b.id})}"
+                               class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                               onclick="return confirm('Are you sure you want to cancel this trip?')">
+                                <i class="fas fa-trash me-1"></i> Cancel
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bookings-empty text-center" th:if="${#lists.isEmpty(bookings)}">
+            <i class="fas fa-suitcase-rolling fa-2x text-primary mb-3"></i>
+            <h5 class="fw-bold">No bookings yet</h5>
+            <p class="text-muted mb-3">Your booked trips will appear here once you confirm your first package.</p>
+            <a th:href="@{/home}" class="btn btn-primary rounded-pill px-4">Explore Destinations</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

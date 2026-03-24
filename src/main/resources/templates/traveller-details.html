@@ -3,49 +3,244 @@
       th:replace="~{base :: layout(~{::title},~{::body})}">
 
 <head>
-<title>Traveller Details</title>
+    <title>Traveller Details</title>
+    <style>
+        .booking-shell {
+            margin: 32px 0 18px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 24px 45px rgba(15, 23, 42, 0.15);
+            background: #fff;
+        }
+
+        .booking-head {
+            padding: 28px;
+            color: #fff;
+            background: linear-gradient(120deg, #0f172a, #0d6efd);
+        }
+
+        .booking-head h1 {
+            margin-bottom: 8px;
+            font-size: clamp(1.5rem, 3.5vw, 2.3rem);
+            font-weight: 800;
+        }
+
+        .booking-head p {
+            margin-bottom: 0;
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        .booking-body {
+            padding: 28px;
+        }
+
+        .field-label {
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 12px;
+            min-height: 46px;
+            border-color: rgba(100, 116, 139, 0.35);
+        }
+
+        .summary-card {
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 14px;
+            background: #f8fafc;
+            padding: 16px;
+        }
+
+        .price-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #198754;
+            line-height: 1;
+        }
+
+        .service-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            color: #475569;
+            font-size: 0.93rem;
+        }
+
+        .service-line strong {
+            color: #0f172a;
+        }
+
+        .sticky-right {
+            position: sticky;
+            top: 95px;
+        }
+
+        @media (max-width: 992px) {
+            .sticky-right {
+                position: static;
+            }
+        }
+    </style>
 </head>
 
 <body>
+<div class="booking-page">
+<div class="container pb-5">
+    <section class="booking-shell">
+        <div class="booking-head">
+            <h1>Finalize Your Trip to <span th:text="${place}">Destination</span></h1>
+            <p>Fill traveler details and customize services before confirming your booking.</p>
+        </div>
 
-<div class="text-center mb-4">
-<h1 class="text-primary fw-bold">
-<i class="fas fa-user"></i> Traveller Details
-</h1>
-<p class="text-muted">
-Please fill in your details to confirm the booking for <strong th:text="${place}">Place</strong>
-</p>
+        <div class="booking-body">
+            <div th:if="${error}" class="alert alert-danger mb-4" th:text="${error}"></div>
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <form th:action="@{/booking-confirm}" method="post" id="bookingForm">
+                        <input type="hidden" name="place" th:value="${place}">
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="field-label" for="name">Full Name</label>
+                                    <input id="name" type="text" name="name" class="form-control" placeholder="Enter your full name"
+                                        pattern="[A-Za-z ]{2,50}" maxlength="50"
+                                        title="Name should contain only letters and spaces (2-50 characters)." required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="field-label" for="email">Email</label>
+                                    <input id="email" type="email" name="email" class="form-control" placeholder="you@gmail.com"
+                                        pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
+                                        title="Please enter a valid email address." required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="field-label" for="phone">Phone</label>
+                                <input id="phone" type="tel" name="phone" class="form-control" placeholder="Phone number"
+                                       pattern="[0-9]{10,15}" maxlength="15"
+                                       title="Phone number must be 10 to 15 digits." required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label" for="people">Travellers</label>
+                                <input id="people" type="number" name="people" class="form-control" min="1" max="20" value="1" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="field-label" for="date">Travel Date</label>
+                                <input id="date" type="date" name="date" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="summary-card mb-3">
+                            <h6 class="fw-bold mb-3">Customize Services</h6>
+                            <div class="mb-3">
+                                <label class="field-label" for="transport">Transport</label>
+                                <select name="transport" id="transport" class="form-select">
+                                    <option value="Bus">Bus (Included)</option>
+                                    <option value="Train">Train (+$50)</option>
+                                    <option value="Flight">Flight (+$150)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="food" id="food">
+                                <label class="form-check-label" for="food">Include Food (+$40 per traveler)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="guide" id="guide">
+                                <label class="form-check-label" for="guide">Local Guide (+$60 per traveler)</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold">
+                            Confirm Booking <i class="fas fa-check ms-1"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="trip-preview-card mb-3">
+                        <img th:src="@{'/images/' + ${place.toLowerCase().replace(' ','')} + '.jpg'}"
+                             onerror="this.onerror=null;this.src='/images/travel-banner.jpg';"
+                             alt="Trip preview">
+                        <div class="trip-preview-overlay">
+                            <span class="badge rounded-pill text-bg-warning">Selected Destination</span>
+                            <h6 class="fw-bold mb-0 mt-2" th:text="${place}">Destination</h6>
+                        </div>
+                    </div>
+
+                    <aside class="summary-card sticky-right">
+                        <p class="text-uppercase small text-muted mb-2">Estimated Total</p>
+                        <div class="price-value" id="totalPrice">$399</div>
+                        <p class="small text-muted">Price updates live as you customize your package.</p>
+
+                        <hr>
+
+                        <div class="service-line"><span>Base package</span><strong>$399</strong></div>
+                        <div class="service-line"><span>Transport extra</span><strong id="transportExtra">$0</strong></div>
+                        <div class="service-line"><span>Food option</span><strong id="foodExtra">$0</strong></div>
+                        <div class="service-line"><span>Guide option</span><strong id="guideExtra">$0</strong></div>
+                        <div class="service-line"><span>Travellers</span><strong id="peopleCount">1</strong></div>
+                    </aside>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a th:href="@{/place/{id}(id=${place})}" class="btn btn-outline-secondary rounded-pill px-4">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Itinerary
+                </a>
+            </div>
+        </div>
+    </section>
 </div>
 
-<div class="row justify-content-center">
-<div class="col-md-6">
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var basePrice = 399;
+        var peopleInput = document.getElementById('people');
+        var transportInput = document.getElementById('transport');
+        var foodInput = document.getElementById('food');
+        var guideInput = document.getElementById('guide');
+        var dateInput = document.getElementById('date');
 
-<div class="card shadow border-0">
-<div class="card-body p-4">
+        var totalPrice = document.getElementById('totalPrice');
+        var transportExtraText = document.getElementById('transportExtra');
+        var foodExtraText = document.getElementById('foodExtra');
+        var guideExtraText = document.getElementById('guideExtra');
+        var peopleCountText = document.getElementById('peopleCount');
 
-<form th:action="@{/booking-confirm}" method="post">
-<input type="hidden" name="place" th:value="${place}">
+        function calculate() {
+            var people = Math.max(1, parseInt(peopleInput.value || '1', 10));
+            var transportExtra = transportInput.value === 'Flight' ? 150 : (transportInput.value === 'Train' ? 50 : 0);
+            var foodExtra = foodInput.checked ? 40 : 0;
+            var guideExtra = guideInput.checked ? 60 : 0;
 
-<input type="text" name="name" class="form-control mb-3" placeholder="Full Name" required>
-<input type="email" name="email" class="form-control mb-3" placeholder="Email" required>
-<input type="tel" name="phone" class="form-control mb-3" placeholder="Phone Number" required>
-<input type="number" name="people" class="form-control mb-3" placeholder="Number of People" required>
-<input type="date" name="date" class="form-control mb-3" required>
+            var totalPerPerson = basePrice + transportExtra + foodExtra + guideExtra;
+            var finalTotal = totalPerPerson * people;
 
-<button class="btn btn-success w-100 mb-2">
-<i class="fas fa-check"></i> Confirm Booking
-</button>
+            transportExtraText.textContent = '$' + transportExtra;
+            foodExtraText.textContent = '$' + foodExtra;
+            guideExtraText.textContent = '$' + guideExtra;
+            peopleCountText.textContent = people;
+            totalPrice.textContent = '$' + finalTotal;
+        }
 
-<a th:href="@{/home}" class="btn btn-outline-secondary w-100 mt-2">
-Back to Home
-</a>
+        peopleInput.addEventListener('input', calculate);
+        transportInput.addEventListener('change', calculate);
+        foodInput.addEventListener('change', calculate);
+        guideInput.addEventListener('change', calculate);
 
-</form>
+        if (dateInput) {
+            var today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+        }
+        calculate();
+    });
+</script>
 </div>
-</div>
-
-</div>
-</div>
-
 </body>
 </html>
