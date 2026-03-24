@@ -116,7 +116,10 @@ public String place(@PathVariable String placeName, Model model) {
 
     @GetMapping("/booking/traveller/{place}")
     public String travellerDetails(@PathVariable String place, Model model) {
+        Place placeObj = placeRepo.findByNameIgnoreCase(place).orElse(null);
+        double basePrice = (placeObj != null && placeObj.getPrice() != null) ? placeObj.getPrice() : 399.0;
         model.addAttribute("place", place);
+        model.addAttribute("basePrice", basePrice);
         return "traveller-details";
     }
 
@@ -179,7 +182,8 @@ public String confirm(@RequestParam String place, @RequestParam String name,
         }
 
     // 1. Calculation Logic
-    double basePrice = 399.0;
+    Place placeObj = placeRepo.findByNameIgnoreCase(place).orElse(null);
+    double basePrice = (placeObj != null && placeObj.getPrice() != null) ? placeObj.getPrice() : 399.0;
     double transportExtra = transport.equals("Flight") ? 150.0 : (transport.equals("Train") ? 50.0 : 0.0);
     double foodExtra = food ? 40.0 : 0.0;
     double guideExtra = guide ? 60.0 : 0.0;

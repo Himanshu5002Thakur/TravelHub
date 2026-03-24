@@ -175,12 +175,12 @@
 
                     <aside class="summary-card sticky-right">
                         <p class="text-uppercase small text-muted mb-2">Estimated Total</p>
-                        <div class="price-value" id="totalPrice">$399</div>
+                        <div class="price-value" id="totalPrice">$<span th:text="${basePrice}">399</span></div>
                         <p class="small text-muted">Price updates live as you customize your package.</p>
 
                         <hr>
 
-                        <div class="service-line"><span>Base package</span><strong>$399</strong></div>
+                        <div class="service-line"><span>Base package</span><strong>$<span th:text="${basePrice}">399</span></strong></div>
                         <div class="service-line"><span>Transport extra</span><strong id="transportExtra">$0</strong></div>
                         <div class="service-line"><span>Food option</span><strong id="foodExtra">$0</strong></div>
                         <div class="service-line"><span>Guide option</span><strong id="guideExtra">$0</strong></div>
@@ -198,9 +198,9 @@
     </section>
 </div>
 
-<script>
+<script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
-        var basePrice = 399;
+        var basePrice = /*[[${basePrice}]]*/ 399;
         var peopleInput = document.getElementById('people');
         var transportInput = document.getElementById('transport');
         var foodInput = document.getElementById('food');
