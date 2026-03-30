@@ -94,6 +94,7 @@
         .price-pill {
             display: inline-flex;
             align-items: baseline;
+            justify-content: center;
             gap: 2px;
             border-radius: 999px;
             background: #edf4ff;
@@ -101,6 +102,8 @@
             font-weight: 700;
             padding: 5px 11px;
             font-size: 0.88rem;
+            min-width: 170px;
+            font-variant-numeric: tabular-nums;
         }
 
         .empty-state {
@@ -115,10 +118,15 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            gap: 10px;
         }
 
         .destination-card .btn {
             margin-top: auto;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         @media (max-width: 768px) {
@@ -164,11 +172,14 @@
 
                 <div class="card-body p-4 text-center">
                     <h5 class="fw-bold mb-2" th:text="${place.name}">Place Name</h5>
-                    <p class="text-muted small mb-3">Popular for scenic views, local food and immersive experiences.</p>
+                    <p class="text-muted small mb-3"
+                       th:text="${place.description != null and !#strings.isEmpty(place.description) ? #strings.abbreviate(place.description, 95) : 'A carefully curated destination with local highlights, premium stays and seamless travel plans.'}">
+                        A carefully curated destination with local highlights, premium stays and seamless travel plans.
+                    </p>
 
                     <div class="mb-3">
                         <span class="price-pill">
-                            $<span th:text="${place.price}">399</span>
+                            ₹<span th:text="${#numbers.formatDecimal(place.price, 1, 'COMMA', 0, 'POINT')}">24,999</span>
                             <small class="text-muted ms-1">per person</small>
                         </span>
                     </div>

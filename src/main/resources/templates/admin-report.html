@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::title},~{::body})}">
+<head>
+    <title>My Report | TravelHub</title>
+</head>
+<body>
+<div class="report-page">
+    <div class="container py-4 pb-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1"><i class="fas fa-chart-line me-2"></i>My Booking Report</h2>
+                <p class="text-muted mb-0">Snapshot of your private/group tours, food selections, and payment outcomes.</p>
+            </div>
+            <a th:href="@{/home}" class="btn btn-outline-secondary rounded-pill px-4">Back to Home</a>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 p-3 h-100">
+                    <small class="text-muted">Total Bookings</small>
+                    <h3 class="fw-bold mb-0" th:text="${totalBookings}">0</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 p-3 h-100">
+                    <small class="text-muted">Paid Bookings</small>
+                    <h3 class="fw-bold text-success mb-0" th:text="${paidBookings}">0</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 p-3 h-100">
+                    <small class="text-muted">Pending Bookings</small>
+                    <h3 class="fw-bold text-warning mb-0" th:text="${pendingBookings}">0</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 p-3 h-100">
+                    <small class="text-muted">Paid Revenue</small>
+                    <h3 class="fw-bold text-primary mb-0">₹<span th:text="${#numbers.formatDecimal(totalRevenue, 1, 'COMMA', 0, 'POINT')}">0</span></h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3">Tour Type Split</h5>
+                        <div th:if="${#maps.isEmpty(tourTypeCounts)}" class="text-muted small">No data available.</div>
+                        <div th:each="item : ${tourTypeCounts}" class="d-flex justify-content-between border-bottom py-2">
+                            <span th:text="${item.key}">PRIVATE</span>
+                            <strong th:text="${item.value}">0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3">Meal Plan Split</h5>
+                        <div th:if="${#maps.isEmpty(mealPlanCounts)}" class="text-muted small">No data available.</div>
+                        <div th:each="item : ${mealPlanCounts}" class="d-flex justify-content-between border-bottom py-2">
+                            <span th:text="${item.key}">NONE</span>
+                            <strong th:text="${item.value}">0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3">Combo Popularity</h5>
+                        <div th:if="${#maps.isEmpty(comboCounts)}" class="text-muted small">No data available.</div>
+                        <div th:each="item : ${comboCounts}" class="d-flex justify-content-between border-bottom py-2">
+                            <span th:text="${item.key}">NONE</span>
+                            <strong th:text="${item.value}">0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Your Recent Bookings</h5>
+                <div class="table-responsive" th:if="${!#lists.isEmpty(recentBookings)}">
+                    <table class="table align-middle">
+                        <thead>
+                        <tr>
+                            <th>Trip ID</th>
+                            <th>Destination</th>
+                            <th>Tour</th>
+                            <th>Meal</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="b : ${recentBookings}">
+                            <td th:text="${b.tripId}">TRV-XXXX</td>
+                            <td th:text="${b.placeName}">Place</td>
+                            <td th:text="${b.tourType != null ? b.tourType : 'PRIVATE'}">PRIVATE</td>
+                            <td th:text="${b.mealPlan != null ? b.mealPlan : 'NONE'}">NONE</td>
+                            <td>
+                                <span class="badge bg-success" th:if="${b.paymentStatus == 'PAID'}">PAID</span>
+                                <span class="badge bg-warning text-dark" th:if="${b.paymentStatus != 'PAID'}" th:text="${b.paymentStatus != null ? b.paymentStatus : 'PENDING'}">PENDING</span>
+                            </td>
+                            <td>₹<span th:text="${#numbers.formatDecimal(b.totalPrice, 1, 'COMMA', 0, 'POINT')}">0</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:if="${#lists.isEmpty(recentBookings)}" class="text-muted">You have no bookings recorded yet.</div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

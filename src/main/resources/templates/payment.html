@@ -7,45 +7,216 @@
 </head>
 
 <body>
+<div class="payment-page">
+<div class="container py-4 pb-5">
+<div class="payment-shell">
+      <div class="text-center mb-4">
+            <div class="payment-head">
+            <h1 class="text-warning fw-bold">
+                  <i class="fas fa-credit-card"></i> Secure Payment
+            </h1>
+            <p class="text-muted mb-1">
+                  Complete payment for trip <strong th:text="${booking.placeName}">Destination</strong>
+            </p>
+            <p class="small text-muted mb-0">
+                  Trip ID: <strong th:text="${booking.tripId}">TRV-XXXXXXX</strong>
+            </p>
+            </div>
+      </div>
 
-<div class="text-center mb-4">
-<h1 class="text-warning fw-bold">
-<i class="fas fa-credit-card"></i> Payment
-</h1>
-<p class="text-muted">
-Pay for your trip to <strong th:text="${place}">Place</strong>
-</p>
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+      <div th:if="${gatewayError}" class="alert alert-warning" th:text="${gatewayError}"></div>
+
+      <div class="row justify-content-center g-4">
+            <div class="col-lg-5">
+                  <div class="payment-summary-card">
+                        <p class="text-uppercase small text-muted mb-2">Total to Pay</p>
+                        <h2 class="payment-total mb-3">₹<span th:text="${#numbers.formatDecimal(booking.totalPrice, 1, 'COMMA', 0, 'POINT')}">0</span></h2>
+
+                        <div class="d-flex justify-content-between mb-2">
+                              <span class="text-muted">Traveller</span>
+                              <strong th:text="${booking.travellerName}">Name</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                              <span class="text-muted">Travel Date</span>
+                              <strong th:text="${booking.travelDate}">2026-01-01</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                              <span class="text-muted">Status</span>
+                              <span class="badge bg-warning text-dark" th:text="${booking.paymentStatus}">PENDING</span>
+                        </div>
+                  </div>
+            </div>
+
+            <div class="col-lg-7">
+                  <div class="payment-method-card">
+                        <h5 class="mb-3">Select Payment Method</h5>
+
+                        <form th:action="@{/payment/{id}(id=${booking.id})}" method="post" id="paymentForm">
+                              <div class="mb-3">
+                                    <label for="paymentMethod" class="form-label fw-semibold">Payment Method</label>
+                                    <select id="paymentMethod" name="paymentMethod" class="form-select" required>
+                                          <option value="">Choose Method</option>
+                                          <option value="CARD">Card Payment</option>
+                                          <option value="UPI_QR">UPI via QR</option>
+                                    </select>
+                              </div>
+
+                              <div id="cardInfo" class="alert alert-info d-none" role="alert">
+                                    Pay securely using Razorpay checkout.
+                              </div>
+
+                              <div id="cardGatewayStatus" class="small text-danger mb-2 d-none">
+                                    Card gateway is not configured. Please use UPI QR.
+                              </div>
+
+                              <input type="hidden" name="razorpayPaymentId" id="razorpayPaymentId">
+                              <input type="hidden" name="razorpayOrderId" id="razorpayOrderId">
+                              <input type="hidden" name="razorpaySignature" id="razorpaySignature">
+
+                              <div id="upiBlock" class="payment-upi-block d-none">
+                                    <p class="fw-semibold mb-2">Pay by UPI QR</p>
+                                        <img th:src="${upiQrImage}" alt="UPI QR" class="img-fluid rounded border mb-3" style="max-width: 260px;"
+                                              onerror="this.onerror=null;this.src='/images/travel-banner.jpg';">
+                                    <p class="mb-1"><strong>UPI ID:</strong> <span th:text="${upiId}">yourupi@bank</span></p>
+                                    <p class="text-muted small">Receiver: <span th:text="${upiName}">Travel Hub</span></p>
+
+                                    <label for="upiReference" class="form-label fw-semibold">UPI Transaction Reference (UTR)</label>
+                                    <input id="upiReference" name="upiReference" type="text" class="form-control"
+                                             placeholder="Enter UTR after payment" pattern="[A-Za-z0-9]{8,30}" maxlength="30">
+                                    <small class="text-muted">Required for UPI QR payments only.</small>
+                              </div>
+
+                              <button type="submit" class="btn btn-success w-100 mt-3 mb-2" id="confirmPaymentBtn">
+                                    <i class="fas fa-wallet"></i> Pay
+                              </button>
+
+                              <a th:href="@{/my-bookings}" class="btn btn-outline-secondary w-100">
+                                    Pay Later
+                              </a>
+                        </form>
+                  </div>
+            </div>
+      </div>
+</div>
+</div>
 </div>
 
-<div class="row justify-content-center">
-<div class="col-md-6">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script th:inline="javascript">
+      (function () {
+            var form = document.getElementById('paymentForm');
+            var method = document.getElementById('paymentMethod');
+            var upiBlock = document.getElementById('upiBlock');
+            var cardInfo = document.getElementById('cardInfo');
+            var upiReference = document.getElementById('upiReference');
+            var cardGatewayStatus = document.getElementById('cardGatewayStatus');
+            var confirmBtn = document.getElementById('confirmPaymentBtn');
 
-<div class="card shadow border-0 p-4">
+            var razorpayEnabled = /*[[${razorpayEnabled}]]*/ false;
+            var razorpayKeyId = /*[[${razorpayKeyId}]]*/ '';
+            var razorpayOrderId = /*[[${razorpayOrderId}]]*/ '';
+            var razorpayAmount = /*[[${razorpayAmount}]]*/ 0;
+            var razorpayCurrency = /*[[${razorpayCurrency}]]*/ 'INR';
+            var tripId = /*[[${booking.tripId}]]*/ 'TRV';
+            var travellerName = /*[[${booking.travellerName}]]*/ 'Traveller';
+            var travellerEmail = /*[[${booking.email}]]*/ '';
+            var travellerPhone = /*[[${booking.phone}]]*/ '';
+            var placeName = /*[[${booking.placeName}]]*/ 'Destination';
 
-<h5 class="mb-3">Select Payment Method</h5>
+            var paymentIdInput = document.getElementById('razorpayPaymentId');
+            var orderIdInput = document.getElementById('razorpayOrderId');
+            var signatureInput = document.getElementById('razorpaySignature');
 
-<select class="form-select mb-3" required>
-<option value="">Choose Method</option>
-<option>Credit / Debit Card</option>
-<option>UPI</option>
-<option>Net Banking</option>
-</select>
+            function isRazorpayLoaded() {
+                  return typeof window.Razorpay === 'function';
+            }
 
-<input type="text" class="form-control mb-3" placeholder="Card / UPI / Account Number" required>
-<input type="text" class="form-control mb-3" placeholder="Name on Card / Account" required>
-<input type="number" class="form-control mb-3" placeholder="CVV / OTP" required>
+            function toggleBlocks() {
+                  var current = method.value;
+                  var isUpi = current === 'UPI_QR';
+                  var isCard = current === 'CARD';
+                  var canUseCard = razorpayEnabled && isRazorpayLoaded();
 
-<button class="btn btn-success w-100 mb-2">
-<i class="fas fa-check"></i> Pay Now
-</button>
+                  upiBlock.classList.toggle('d-none', !isUpi);
+                  cardInfo.classList.toggle('d-none', !isCard);
+                  cardGatewayStatus.classList.toggle('d-none', !isCard || canUseCard);
 
-<a th:href="@{/home}" class="btn btn-outline-secondary w-100 mt-2">
-Cancel Payment
-</a>
+                  if (isCard && !canUseCard) {
+                        cardGatewayStatus.textContent = 'Card gateway is currently unavailable. Please use UPI QR.';
+                  }
 
-</div>
-</div>
-</div>
+                  if (isUpi) {
+                        upiReference.setAttribute('required', 'required');
+                        confirmBtn.innerHTML = '<i class="fas fa-check"></i> Confirm UPI Payment';
+                  } else if (isCard) {
+                        upiReference.removeAttribute('required');
+                        upiReference.value = '';
+                        confirmBtn.innerHTML = '<i class="fas fa-credit-card"></i> Pay with Card';
+                  } else {
+                        upiReference.removeAttribute('required');
+                        upiReference.value = '';
+                        confirmBtn.innerHTML = '<i class="fas fa-wallet"></i> Pay';
+                  }
+            }
+
+            function openRazorpayCheckout() {
+                  if (!isRazorpayLoaded()) {
+                        alert('Unable to load card checkout right now. Please use UPI QR or retry.');
+                        return;
+                  }
+
+                  var options = {
+                        key: razorpayKeyId,
+                        amount: razorpayAmount,
+                        currency: razorpayCurrency,
+                        name: 'Travel Hub',
+                        description: 'Trip Payment - ' + placeName,
+                        order_id: razorpayOrderId,
+                        prefill: {
+                              name: travellerName,
+                              email: travellerEmail,
+                              contact: travellerPhone
+                        },
+                        notes: {
+                              tripId: tripId
+                        },
+                        handler: function (response) {
+                              paymentIdInput.value = response.razorpay_payment_id || '';
+                              orderIdInput.value = response.razorpay_order_id || '';
+                              signatureInput.value = response.razorpay_signature || '';
+                              form.submit();
+                        },
+                        theme: {
+                              color: '#0d6efd'
+                        }
+                  };
+
+                  var rzp = new Razorpay(options);
+                  rzp.open();
+            }
+
+            form.addEventListener('submit', function (event) {
+                  if (method.value !== 'CARD') {
+                        return;
+                  }
+
+                  event.preventDefault();
+                  if (!razorpayEnabled || !razorpayOrderId || !razorpayKeyId) {
+                        alert('Card gateway is not configured. Please use UPI QR.');
+                        return;
+                  }
+                  if (!isRazorpayLoaded()) {
+                        alert('Unable to load card checkout right now. Please use UPI QR or retry.');
+                        return;
+                  }
+                  openRazorpayCheckout();
+            });
+
+            method.addEventListener('change', toggleBlocks);
+            toggleBlocks();
+      })();
+</script>
 
 </body>
 </html>

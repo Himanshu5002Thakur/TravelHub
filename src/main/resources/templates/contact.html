@@ -20,30 +20,43 @@
 <div class="row g-4 justify-content-center">
     <div class="col-lg-7">
         <div class="contact-card">
+            <div th:if="${error}" class="alert alert-danger mb-4" role="alert">
+                <i class="fas fa-triangle-exclamation me-1"></i>
+                <span th:text="${error}"></span>
+            </div>
+
             <div th:if="${success}" class="alert alert-success mb-4" role="alert">
                 <i class="fas fa-check-circle me-1"></i>
                 <span th:text="${success}"></span>
             </div>
 
-            <form th:action="@{/contact}" method="post">
+            <form th:action="@{/contact}" method="post" id="contactForm" novalidate>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Your Name</label>
+                    <label for="contactName" class="form-label fw-semibold">Your Name</label>
                     <input type="text" name="name" class="form-control" placeholder="Enter your full name"
+                           id="contactName" th:value="${contactName}"
                            pattern="[A-Za-z ]{2,50}" maxlength="50"
                            title="Name should contain only letters and spaces (2-50 characters)." required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Your Email</label>
+                    <label for="contactEmail" class="form-label fw-semibold">Your Email</label>
                     <input type="email" name="email" class="form-control" placeholder="you@gmail.com"
+                           id="contactEmail" th:value="${contactEmail}"
                            pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
                            title="Please enter a valid email address." required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Message</label>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label for="contactMessage" class="form-label fw-semibold mb-0">Message</label>
+                        <small class="text-muted"><span id="messageCount">0</span>/600</small>
+                    </div>
                     <textarea name="message" class="form-control" rows="5" maxlength="600"
-                              placeholder="Tell us your travel plan, preferred destination, and dates." required></textarea>
+                              id="contactMessage"
+                              placeholder="Tell us your travel plan, preferred destination, and dates."
+                              required th:text="${contactMessage}"></textarea>
+                    <small class="text-muted">Please include destination, travel dates, and number of travelers.</small>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold">
@@ -68,6 +81,11 @@
                 <span>+91-9015409405</span>
             </div>
 
+            <div class="contact-info-line mb-4">
+                <i class="fas fa-clock text-warning"></i>
+                <span>Mon-Sat, 9:00 AM - 8:00 PM</span>
+            </div>
+
             <a th:href="@{/home}" class="btn btn-outline-secondary rounded-pill px-4">Back to Home</a>
         </div>
     </div>
@@ -75,6 +93,23 @@
 
 </div>
 </div>
+
+<script>
+    (function () {
+        var message = document.getElementById('contactMessage');
+        var counter = document.getElementById('messageCount');
+        if (!message || !counter) {
+            return;
+        }
+
+        function syncCount() {
+            counter.textContent = message.value.length;
+        }
+
+        message.addEventListener('input', syncCount);
+        syncCount();
+    })();
+</script>
 
 </body>
 </html>

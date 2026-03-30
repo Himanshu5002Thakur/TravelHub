@@ -4,7 +4,18 @@
 
 <head>
     <title>Traveller Details</title>
+</head>
+
+<body>
     <style>
+        :root {
+            --booking-accent: #0d6efd;
+            --booking-accent-soft: #eaf2ff;
+            --booking-ink: #0f172a;
+            --booking-muted: #475569;
+            --booking-border: rgba(148, 163, 184, 0.32);
+        }
+
         .booking-shell {
             margin: 32px 0 18px;
             border-radius: 20px;
@@ -49,10 +60,317 @@
         }
 
         .summary-card {
-            border: 1px solid rgba(148, 163, 184, 0.3);
+            border: 1px solid var(--booking-border);
             border-radius: 14px;
             background: #f8fafc;
             padding: 16px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--booking-ink);
+            letter-spacing: 0.01em;
+        }
+
+        .section-hint {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #1d4ed8;
+            background: #eaf2ff;
+            border: 1px solid rgba(13, 110, 253, 0.25);
+            border-radius: 999px;
+            padding: 3px 10px;
+            min-height: 24px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .meal-plan-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .meal-plan-option {
+            border: 1px solid var(--booking-border);
+            border-radius: 12px;
+            padding: 10px;
+            background: #fff;
+            cursor: pointer;
+            transition: 0.2s ease;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+        }
+
+        .meal-plan-option:hover {
+            border-color: rgba(13, 110, 253, 0.45);
+            background: #f8fbff;
+        }
+
+        .meal-plan-option.active {
+            border-color: var(--booking-accent);
+            box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.11);
+            background: linear-gradient(180deg, #f5f9ff 0%, #ecf3ff 100%);
+        }
+
+        .meal-plan-option input {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+        }
+
+        .meal-plan-name {
+            font-size: 0.81rem;
+            font-weight: 700;
+            color: var(--booking-ink);
+            display: block;
+            line-height: 1.2;
+        }
+
+        .meal-plan-price {
+            font-size: 0.74rem;
+            color: #166534;
+            font-weight: 700;
+        }
+
+        #foodComboGrid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .food-combo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .combo-section {
+            border: 1px solid var(--booking-border);
+            border-radius: 14px;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        }
+
+        .combo-section-title {
+            margin: 0 0 10px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        #foodDetailBlock {
+            border: 1px solid var(--booking-border) !important;
+            border-radius: 14px !important;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%) !important;
+        }
+
+        .food-combo-card {
+            border: 1px solid var(--booking-border);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            transition: 0.22s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 305px;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+        }
+
+        .food-combo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
+        }
+
+        .food-combo-card.active {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.16), 0 12px 22px rgba(13, 110, 253, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .food-combo-media {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            background: #e2e8f0;
+        }
+
+        .food-combo-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            transition: transform 0.35s ease;
+        }
+
+        .food-combo-card:hover .food-combo-media img {
+            transform: scale(1.05);
+        }
+
+        .food-combo-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(30, 64, 175, 0.85);
+            color: #fff;
+            border-radius: 999px;
+            padding: 3px 8px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .food-combo-select-chip {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(30, 41, 59, 0.7);
+            color: #fff;
+            border-radius: 999px;
+            padding: 4px 8px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            opacity: 0;
+            transform: translateY(-2px);
+            transition: 0.2s ease;
+        }
+
+        .food-combo-card.active .food-combo-select-chip {
+            background: #2563eb;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .combo-meta {
+            display: none;
+        }
+
+        .food-combo-body {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .food-combo-name {
+            font-size: 0.83rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--booking-ink);
+            min-height: 40px;
+            line-height: 1.25;
+        }
+
+        .food-combo-price {
+            font-size: 0.84rem;
+            color: #0f766e;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        .variant-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .variant-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: 10px;
+            padding: 6px 8px;
+            background: #f8fafc;
+        }
+
+        .variant-label {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .qty-stepper {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            border-radius: 999px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .qty-btn {
+            border: 0;
+            background: #eef4ff;
+            color: #0d47a1;
+            width: 24px;
+            height: 24px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .qty-btn:hover {
+            background: #dbe9ff;
+        }
+
+        .qty-value {
+            min-width: 22px;
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        @media (max-width: 768px) {
+            .food-combo-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .food-combo-card {
+                min-height: 330px;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .food-combo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .invoice-box {
+            border-top: 1px dashed rgba(100, 116, 139, 0.4);
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        .invoice-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 6px;
         }
 
         .price-value {
@@ -60,6 +378,7 @@
             font-weight: 800;
             color: #198754;
             line-height: 1;
+            font-variant-numeric: tabular-nums;
         }
 
         .service-line {
@@ -85,9 +404,6 @@
             }
         }
     </style>
-</head>
-
-<body>
 <div class="booking-page">
 <div class="container pb-5">
     <section class="booking-shell">
@@ -126,7 +442,7 @@
                                        title="Phone number must be 10 to 15 digits." required>
                             </div>
                             <div class="col-md-4">
-                                <label class="field-label" for="people">Travellers</label>
+                                <label class="field-label" for="people">Travellers <span id="groupMinHint" class="small text-info d-none">(Min 2 for Group)</span></label>
                                 <input id="people" type="number" name="people" class="form-control" min="1" max="20" value="1" required>
                             </div>
                             <div class="col-md-4">
@@ -138,26 +454,82 @@
                         <div class="summary-card mb-3">
                             <h6 class="fw-bold mb-3">Customize Services</h6>
                             <div class="mb-3">
+                                <label class="field-label" for="tourType">Tour Type</label>
+                                <select name="tourType" id="tourType" class="form-select">
+                                    <option value="PRIVATE">Private Tour (Standard Price)</option>
+                                    <option value="GROUP">Group Tour (12% Off)</option>
+                                </select>
+                                <small class="text-muted">Group tour requires minimum 2 travellers.</small>
+                            </div>
+
+                            <div class="mb-3">
                                 <label class="field-label" for="transport">Transport</label>
                                 <select name="transport" id="transport" class="form-select">
                                     <option value="Bus">Bus (Included)</option>
-                                    <option value="Train">Train (+$50)</option>
-                                    <option value="Flight">Flight (+$150)</option>
+                                    <option value="Train">Train (+₹2,000)</option>
+                                    <option value="Flight">Flight (+₹8,500)</option>
                                 </select>
                             </div>
 
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="food" id="food">
-                                <label class="form-check-label" for="food">Include Food (+$40 per traveler)</label>
+                            <div class="mb-3">
+                                <div class="section-header">
+                                    <h6 class="section-title">Meal Plan</h6>
+                                    <span class="section-hint" id="mealSelectionHint">No plan selected</span>
+                                </div>
+                                <div class="meal-plan-options" id="mealPlanOptions">
+                                    <label class="meal-plan-option" data-plan="BREAKFAST">
+                                        <input type="checkbox" value="BREAKFAST">
+                                        <span>
+                                            <span class="meal-plan-name">Breakfast</span>
+                                            <span class="meal-plan-price">+₹500</span>
+                                        </span>
+                                    </label>
+                                    <label class="meal-plan-option" data-plan="LUNCH">
+                                        <input type="checkbox" value="LUNCH">
+                                        <span>
+                                            <span class="meal-plan-name">Lunch</span>
+                                            <span class="meal-plan-price">+₹550</span>
+                                        </span>
+                                    </label>
+                                    <label class="meal-plan-option" data-plan="DINNER">
+                                        <input type="checkbox" value="DINNER">
+                                        <span>
+                                            <span class="meal-plan-name">Dinner</span>
+                                            <span class="meal-plan-price">+₹650</span>
+                                        </span>
+                                    </label>
+                                    <label class="meal-plan-option" data-plan="FULL_DAY">
+                                        <input type="checkbox" value="FULL_DAY">
+                                        <span>
+                                            <span class="meal-plan-name">Full Day</span>
+                                            <span class="meal-plan-price">+₹1,800</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <small class="text-muted">You can choose multiple plans like Breakfast + Dinner. Full Day works as a single all-inclusive option.</small>
+                                <input type="hidden" name="mealPlan" id="mealPlan" value="NONE">
                             </div>
+
+                            <div id="foodDetailBlock" class="border rounded p-3 bg-white mb-3 d-none">
+                                <div class="section-header">
+                                    <h6 class="section-title">Food Selection</h6>
+                                    <span class="section-hint" id="dishSelectionHint">No dishes selected</span>
+                                </div>
+                                <small class="text-muted d-block mb-2">Choose separate plate count for Veg and Non-Veg. You can mix both across lunch and dinner. Max 6 plates per meal per traveller.</small>
+                                <input type="hidden" name="foodPreference" id="foodPreference" value="MIXED">
+                                <input type="hidden" name="foodCombo" id="foodCombo" value="NONE">
+                                <label class="field-label">Dish Selection</label>
+                                <div class="food-combo-grid" id="foodComboGrid"></div>
+                            </div>
+
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="guide" id="guide">
-                                <label class="form-check-label" for="guide">Local Guide (+$60 per traveler)</label>
+                                <label class="form-check-label" for="guide">Local Guide (+₹1,800 per traveler)</label>
                             </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold">
-                            Confirm Booking <i class="fas fa-check ms-1"></i>
+                            Proceed to Payment <i class="fas fa-arrow-right ms-1"></i>
                         </button>
                     </form>
                 </div>
@@ -175,16 +547,24 @@
 
                     <aside class="summary-card sticky-right">
                         <p class="text-uppercase small text-muted mb-2">Estimated Total</p>
-                        <div class="price-value" id="totalPrice">$<span th:text="${basePrice}">399</span></div>
+                        <div class="price-value" id="totalPrice">₹<span th:text="${#numbers.formatDecimal(basePrice, 1, 'COMMA', 0, 'POINT')}">24,999</span></div>
                         <p class="small text-muted">Price updates live as you customize your package.</p>
 
                         <hr>
 
-                        <div class="service-line"><span>Base package</span><strong>$<span th:text="${basePrice}">399</span></strong></div>
-                        <div class="service-line"><span>Transport extra</span><strong id="transportExtra">$0</strong></div>
-                        <div class="service-line"><span>Food option</span><strong id="foodExtra">$0</strong></div>
-                        <div class="service-line"><span>Guide option</span><strong id="guideExtra">$0</strong></div>
+                            <div class="service-line"><span>Base package</span><strong>₹<span th:text="${#numbers.formatDecimal(basePrice, 1, 'COMMA', 0, 'POINT')}">24,999</span></strong></div>
+                        <div class="service-line"><span>Tour type</span><strong id="tourTypeText">Private</strong></div>
+                        <div class="service-line"><span>Transport extra</span><strong id="transportExtra">₹0</strong></div>
+                        <div class="service-line"><span>Food option</span><strong id="foodExtra">₹0</strong></div>
+                        <div class="service-line"><span>Food details</span><strong id="foodDetailText">No Meal Plan</strong></div>
+                        <div class="service-line"><span>Guide option</span><strong id="guideExtra">₹0</strong></div>
+                        <div class="service-line"><span>Group discount</span><strong id="groupDiscountText">₹0</strong></div>
                         <div class="service-line"><span>Travellers</span><strong id="peopleCount">1</strong></div>
+
+                        <div class="invoice-box">
+                            <div class="service-line"><span>Subtotal</span><strong id="subtotalText">₹0</strong></div>
+                            <div class="invoice-total"><span>Total Payable</span><span id="invoiceTotalText">₹0</span></div>
+                        </div>
                     </aside>
                 </div>
             </div>
@@ -200,44 +580,550 @@
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
-        var basePrice = /*[[${basePrice}]]*/ 399;
+        var basePrice = /*[[${basePrice}]]*/ 24999;
+        var inrFormatter = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
         var peopleInput = document.getElementById('people');
+        var tourTypeInput = document.getElementById('tourType');
         var transportInput = document.getElementById('transport');
-        var foodInput = document.getElementById('food');
+        var mealPlanOptions = document.getElementById('mealPlanOptions');
+        var mealPlanInput = document.getElementById('mealPlan');
+        var foodPreferenceInput = document.getElementById('foodPreference');
+        var foodComboInput = document.getElementById('foodCombo');
+        var foodComboGrid = document.getElementById('foodComboGrid');
+        var foodDetailBlock = document.getElementById('foodDetailBlock');
         var guideInput = document.getElementById('guide');
         var dateInput = document.getElementById('date');
+
+        var mealLabels = {
+            BREAKFAST: 'Breakfast',
+            LUNCH: 'Lunch',
+            DINNER: 'Dinner',
+            FULL_DAY: 'Full Day'
+        };
+
+        var mealPlanPrices = {
+            BREAKFAST: 500,
+            LUNCH: 550,
+            DINNER: 650,
+            FULL_DAY: 1800
+        };
+
+        var maxPlatesPerMealPerTraveller = 6;
+
+        var comboCatalog = {
+            BREAKFAST: [
+                { code: 'BF_CLASSIC', name: 'Classic Idli Plate', price: 350, image: '/images/Classic%20Idli%20Plate.jpg', nonVegImage: '/images/nonveg-Classic%20Idli%20Plate.avif', tag: 'Breakfast' },
+                { code: 'BF_NORTH', name: 'Paratha and Curd', price: 390, image: '/images/Paratha%20and%20Curd.jpg', nonVegImage: '/images/nonveg-Paratha%20and%20Curd.webp', tag: 'Breakfast' },
+                { code: 'BF_HEALTH', name: 'Healthy Bowl', price: 430, image: '/images/Healthy%20Bowl.jpg', nonVegImage: '/images/nonveg-Healthy%20Bowl.jpg', tag: 'Breakfast' }
+            ],
+            LUNCH: [
+                { code: 'LD_THALI', name: 'Regional Thali', price: 680, image: '/images/Regional%20Thali.jpg', nonVegImage: '/images/nonveg-Regional%20Thali.webp', tag: 'Lunch' },
+                { code: 'LD_TANDOOR', name: 'Tandoor Grill Platter', price: 820, image: '/images/Tandoor%20Grill%20Platter.jpg', nonVegImage: '/images/nonveg-Tandoor%20Grill%20Platter.jpg', tag: 'Lunch' },
+                { code: 'LD_CONTINENTAL', name: 'Continental Bowl', price: 740, image: '/images/Continental%20Bowl.jpg', nonVegImage: '/images/nonveg-Continental%20Bowl.png', tag: 'Lunch' }
+            ],
+            DINNER: [
+                { code: 'DN_THALI', name: 'Soup and Salad Platter', price: 620, image: '/images/Continental%20Bowl.jpg', nonVegImage: '/images/nonveg-Continental%20Bowl.png', tag: 'Dinner' },
+                { code: 'DN_TANDOOR', name: 'Signature Dinner Biryani', price: 860, image: '/images/Tandoor%20Grill%20Platter.jpg', nonVegImage: '/images/nonveg-Tandoor%20Grill%20Platter.jpg', tag: 'Dinner' },
+                { code: 'DN_CONTINENTAL', name: 'Dinner with Dessert', price: 760, image: '/images/Regional%20Thali.jpg', nonVegImage: '/images/nonveg-Regional%20Thali.webp', tag: 'Dinner' }
+            ],
+            FULL_DAY: [
+                { code: 'FD_BALANCED', name: 'Balanced Full Day', price: 1050, image: '/images/Balanced%20Full%20Day.jpg', nonVegImage: '/images/nonveg-Balanced%20Full%20Day.jpg', tag: 'Full Day' },
+                { code: 'FD_PREMIUM', name: 'Premium Full Day', price: 1450, image: '/images/Premium%20Full%20Day.jpg', nonVegImage: '/images/nonveg-Premium%20Full%20Day.jpg', tag: 'Full Day' },
+                { code: 'FD_KIDS', name: 'Kids Friendly Full Day', price: 910, image: '/images/Kids%20Friendly%20Full%20Day.jpg', nonVegImage: '/images/nonveg-Kids%20Friendly%20Full%20Day.jpg', tag: 'Full Day' }
+            ]
+        };
 
         var totalPrice = document.getElementById('totalPrice');
         var transportExtraText = document.getElementById('transportExtra');
         var foodExtraText = document.getElementById('foodExtra');
         var guideExtraText = document.getElementById('guideExtra');
+        var groupDiscountText = document.getElementById('groupDiscountText');
+        var tourTypeText = document.getElementById('tourTypeText');
+        var foodDetailText = document.getElementById('foodDetailText');
         var peopleCountText = document.getElementById('peopleCount');
+        var subtotalText = document.getElementById('subtotalText');
+        var invoiceTotalText = document.getElementById('invoiceTotalText');
+        var mealSelectionHint = document.getElementById('mealSelectionHint');
+        var dishSelectionHint = document.getElementById('dishSelectionHint');
+        var foodSelectionState = parseFoodSelectionState(foodComboInput ? foodComboInput.value : 'NONE');
+
+        function parseCsv(value) {
+            if (!value || value === 'NONE') {
+                return [];
+            }
+            return value.split(',').map(function (v) { return v.trim(); }).filter(Boolean);
+        }
+
+        function makeStateKey(code, preference) {
+            return code + '|' + preference;
+        }
+
+        function parseFoodSelectionState(rawValue) {
+            var state = {};
+            parseCsv(rawValue).forEach(function (row) {
+                var parts = row.split(':').map(function (part) { return part.trim().toUpperCase(); }).filter(Boolean);
+                if (!parts.length) {
+                    return;
+                }
+                var code = parts[0];
+                var preference = parts.length >= 2 ? parts[1] : 'VEG';
+                var qty = parts.length >= 3 ? parseInt(parts[2], 10) : 1;
+                if ((preference !== 'VEG' && preference !== 'NON_VEG') || !Number.isInteger(qty) || qty <= 0) {
+                    return;
+                }
+                state[makeStateKey(code, preference)] = Math.min(qty, 9);
+            });
+            return state;
+        }
+
+        function getSelectedQty(code, preference) {
+            return foodSelectionState[makeStateKey(code, preference)] || 0;
+        }
+
+        function totalSelectedPlates() {
+            return Object.keys(foodSelectionState).reduce(function (sum, key) {
+                return sum + (foodSelectionState[key] || 0);
+            }, 0);
+        }
+
+        function clampQuantity(value) {
+            if (!Number.isInteger(value)) {
+                return 0;
+            }
+            if (value < 0) {
+                return 0;
+            }
+            return Math.min(value, 9);
+        }
+
+        function syncFoodPreferenceInput() {
+            if (!foodPreferenceInput) {
+                return;
+            }
+            var hasVeg = false;
+            var hasNonVeg = false;
+            Object.keys(foodSelectionState).forEach(function (key) {
+                if (key.endsWith('|VEG')) {
+                    hasVeg = true;
+                }
+                if (key.endsWith('|NON_VEG')) {
+                    hasNonVeg = true;
+                }
+            });
+            if (hasVeg && hasNonVeg) {
+                foodPreferenceInput.value = 'MIXED';
+            } else if (hasNonVeg) {
+                foodPreferenceInput.value = 'NON_VEG';
+            } else {
+                foodPreferenceInput.value = 'VEG';
+            }
+        }
+
+        function syncFoodHiddenInput() {
+            var rows = Object.keys(foodSelectionState).sort().map(function (key) {
+                var parts = key.split('|');
+                return parts[0] + ':' + parts[1] + ':' + foodSelectionState[key];
+            });
+            foodComboInput.value = rows.length ? rows.join(',') : 'NONE';
+            syncFoodPreferenceInput();
+        }
+
+        function setSelectedQty(code, preference, qty) {
+            var key = makeStateKey(code, preference);
+            var clamped = clampQuantity(qty);
+            if (clamped <= 0) {
+                delete foodSelectionState[key];
+            } else {
+                foodSelectionState[key] = clamped;
+            }
+            syncFoodHiddenInput();
+        }
+
+        function parseFoodRows() {
+            var rows = [];
+            Object.keys(foodSelectionState).forEach(function (key) {
+                var parts = key.split('|');
+                var combo = getComboByCode(parts[0]);
+                var qty = foodSelectionState[key];
+                if (!combo || !qty) {
+                    return;
+                }
+                rows.push({
+                    code: parts[0],
+                    preference: parts[1],
+                    qty: qty,
+                    combo: combo
+                });
+            });
+            return rows;
+        }
+
+        function updateSelectionHints() {
+            var plans = selectedMealPlans();
+            var plateCount = totalSelectedPlates();
+
+            if (mealSelectionHint) {
+                mealSelectionHint.textContent = plans.length
+                    ? (plans.length === 1 ? (mealLabels[plans[0]] + ' selected') : (plans.length + ' plans selected'))
+                    : 'No plan selected';
+            }
+
+            if (dishSelectionHint) {
+                dishSelectionHint.textContent = plateCount
+                    ? (plateCount === 1 ? '1 plate selected' : (plateCount + ' plates selected'))
+                    : 'No dishes selected';
+            }
+        }
+
+        function selectedMealPlans() {
+            if (!mealPlanOptions) {
+                return [];
+            }
+            var checks = mealPlanOptions.querySelectorAll('input[type="checkbox"]:checked');
+            var plans = [];
+            checks.forEach(function (check) {
+                plans.push(check.value);
+            });
+            return plans;
+        }
+
+        function syncMealPlanHiddenInput() {
+            var plans = selectedMealPlans();
+            mealPlanInput.value = plans.length ? plans.join(',') : 'NONE';
+            var options = mealPlanOptions ? mealPlanOptions.querySelectorAll('.meal-plan-option') : [];
+            options.forEach(function (option) {
+                var value = option.getAttribute('data-plan');
+                option.classList.toggle('active', plans.indexOf(value) >= 0);
+            });
+        }
+
+        function getComboByCode(code) {
+            var planKeys = Object.keys(comboCatalog);
+            for (var i = 0; i < planKeys.length; i += 1) {
+                var combos = comboCatalog[planKeys[i]];
+                for (var j = 0; j < combos.length; j += 1) {
+                    if (combos[j].code === code) {
+                        return combos[j];
+                    }
+                }
+            }
+            return null;
+        }
+
+        function getMealKeyForComboCode(code) {
+            if (!code) {
+                return '';
+            }
+            if (code.indexOf('BF_') === 0) {
+                return 'BREAKFAST';
+            }
+            if (code.indexOf('LD_') === 0) {
+                return 'LUNCH';
+            }
+            if (code.indexOf('DN_') === 0) {
+                return 'DINNER';
+            }
+            if (code.indexOf('FD_') === 0) {
+                return 'FULL_DAY';
+            }
+            return '';
+        }
+
+        function getMealPlateCount(mealKey) {
+            if (!mealKey) {
+                return 0;
+            }
+            var total = 0;
+            Object.keys(foodSelectionState).forEach(function (key) {
+                var comboCode = key.split('|')[0];
+                if (getMealKeyForComboCode(comboCode) === mealKey) {
+                    total += foodSelectionState[key] || 0;
+                }
+            });
+            return total;
+        }
+
+        function resolveComboImage(combo, vegQty, nonVegQty) {
+            if (!combo) {
+                return '/images/travel-banner.jpg';
+            }
+            if (nonVegQty > 0 && vegQty === 0 && combo.nonVegImage) {
+                return combo.nonVegImage;
+            }
+            return combo.image;
+        }
+
+        function allowedComboCodes() {
+            var plans = selectedMealPlans();
+            var allowed = [];
+            plans.forEach(function (plan) {
+                var combos = comboCatalog[plan] || [];
+                combos.forEach(function (combo) {
+                    allowed.push(combo.code);
+                });
+            });
+            return allowed;
+        }
+
+        function renderComboCards() {
+            if (!foodComboGrid) {
+                return;
+            }
+            var plans = selectedMealPlans();
+            if (!plans.length) {
+                foodComboGrid.innerHTML = '';
+                return;
+            }
+
+            foodComboGrid.innerHTML = plans.map(function (plan) {
+                var combos = comboCatalog[plan] || [];
+                return '' +
+                    '<div class="combo-section">' +
+                        '<h6 class="combo-section-title">' + mealLabels[plan] + ' Items</h6>' +
+                        '<div class="food-combo-grid">' +
+                            combos.map(function (combo) {
+                                var vegQty = getSelectedQty(combo.code, 'VEG');
+                                var nonVegQty = getSelectedQty(combo.code, 'NON_VEG');
+                                return '' +
+                                    '<div class="food-combo-card" data-combo="' + combo.code + '">' +
+                                        '<div class="food-combo-media">' +
+                                            '<img src="' + resolveComboImage(combo, vegQty, nonVegQty) + '" onerror="this.onerror=null;this.src=\'/images/travel-banner.jpg\';" alt="' + combo.name + '">' +
+                                            '<span class="food-combo-tag">' + combo.tag + '</span>' +
+                                            '<span class="food-combo-select-chip">Selected</span>' +
+                                        '</div>' +
+                                        '<div class="food-combo-body">' +
+                                            '<div class="food-combo-name">' + combo.name + '</div>' +
+                                            '<div class="food-combo-price">+₹' + inrFormatter.format(combo.price) + '</div>' +
+                                            '<div class="variant-rows">' +
+                                                '<div class="variant-row">' +
+                                                    '<span class="variant-label">Veg</span>' +
+                                                    '<div class="qty-stepper">' +
+                                                        '<button type="button" class="qty-btn" data-action="dec" data-code="' + combo.code + '" data-pref="VEG">-</button>' +
+                                                        '<span class="qty-value" data-pref="VEG">' + vegQty + '</span>' +
+                                                        '<button type="button" class="qty-btn" data-action="inc" data-code="' + combo.code + '" data-pref="VEG">+</button>' +
+                                                    '</div>' +
+                                                '</div>' +
+                                                '<div class="variant-row">' +
+                                                    '<span class="variant-label">Non-Veg</span>' +
+                                                    '<div class="qty-stepper">' +
+                                                        '<button type="button" class="qty-btn" data-action="dec" data-code="' + combo.code + '" data-pref="NON_VEG">-</button>' +
+                                                        '<span class="qty-value" data-pref="NON_VEG">' + nonVegQty + '</span>' +
+                                                        '<button type="button" class="qty-btn" data-action="inc" data-code="' + combo.code + '" data-pref="NON_VEG">+</button>' +
+                                                    '</div>' +
+                                                '</div>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>';
+                            }).join('') +
+                        '</div>' +
+                    '</div>';
+            }).join('');
+
+            updateFoodCardState();
+        }
+
+        function updateFoodCardState() {
+            if (!foodComboGrid) {
+                return;
+            }
+            var cards = foodComboGrid.querySelectorAll('.food-combo-card');
+            cards.forEach(function (card) {
+                var code = card.getAttribute('data-combo');
+                var vegQty = getSelectedQty(code, 'VEG');
+                var nonVegQty = getSelectedQty(code, 'NON_VEG');
+                var totalQty = vegQty + nonVegQty;
+                card.classList.toggle('active', totalQty > 0);
+
+                var vegValue = card.querySelector('.qty-value[data-pref="VEG"]');
+                var nonVegValue = card.querySelector('.qty-value[data-pref="NON_VEG"]');
+                if (vegValue) {
+                    vegValue.textContent = vegQty;
+                }
+                if (nonVegValue) {
+                    nonVegValue.textContent = nonVegQty;
+                }
+
+                var chip = card.querySelector('.food-combo-select-chip');
+                if (chip) {
+                    chip.textContent = totalQty > 0 ? (totalQty + ' plate' + (totalQty > 1 ? 's' : '')) : 'Selected';
+                }
+
+                var img = card.querySelector('img');
+                if (img) {
+                    var combo = getComboByCode(code);
+                    img.src = resolveComboImage(combo, vegQty, nonVegQty);
+                }
+            });
+            updateSelectionHints();
+        }
+
+        function normalizeFoodSelection() {
+            syncMealPlanHiddenInput();
+            var plans = selectedMealPlans();
+            var hasMeal = plans.length > 0;
+            foodDetailBlock.classList.toggle('d-none', !hasMeal);
+            if (!hasMeal) {
+                foodSelectionState = {};
+                foodComboInput.value = 'NONE';
+                if (foodPreferenceInput) {
+                    foodPreferenceInput.value = 'VEG';
+                }
+                foodComboGrid.innerHTML = '';
+                updateSelectionHints();
+                return;
+            }
+
+            if (plans.indexOf('FULL_DAY') >= 0 && plans.length > 1) {
+                var fullDayInput = mealPlanOptions.querySelector('input[value="FULL_DAY"]');
+                if (fullDayInput && fullDayInput.checked) {
+                    mealPlanOptions.querySelectorAll('input[type="checkbox"]').forEach(function (check) {
+                        if (check.value !== 'FULL_DAY') {
+                            check.checked = false;
+                        }
+                    });
+                    syncMealPlanHiddenInput();
+                    plans = ['FULL_DAY'];
+                }
+            }
+
+            renderComboCards();
+            var allowed = allowedComboCodes();
+            var filteredState = {};
+            Object.keys(foodSelectionState).forEach(function (key) {
+                var code = key.split('|')[0];
+                if (allowed.indexOf(code) >= 0) {
+                    filteredState[key] = clampQuantity(foodSelectionState[key]);
+                }
+            });
+            foodSelectionState = filteredState;
+            syncFoodHiddenInput();
+            updateFoodCardState();
+            updateSelectionHints();
+        }
+
+        function updateTourTypeConstraints() {
+            var isGroup = tourTypeInput.value === 'GROUP';
+            var groupMinHint = document.getElementById('groupMinHint');
+            groupMinHint.classList.toggle('d-none', !isGroup);
+            peopleInput.setAttribute('min', isGroup ? '2' : '1');
+            if (isGroup && parseInt(peopleInput.value || '1', 10) < 2) {
+                peopleInput.value = '2';
+            }
+        }
 
         function calculate() {
-            var people = Math.max(1, parseInt(peopleInput.value || '1', 10));
-            var transportExtra = transportInput.value === 'Flight' ? 150 : (transportInput.value === 'Train' ? 50 : 0);
-            var foodExtra = foodInput.checked ? 40 : 0;
-            var guideExtra = guideInput.checked ? 60 : 0;
+            var isGroup = tourTypeInput.value === 'GROUP';
+            var minPeople = isGroup ? 2 : 1;
+            var people = Math.max(minPeople, parseInt(peopleInput.value || '1', 10));
+            if (String(peopleInput.value) !== String(people)) {
+                peopleInput.value = String(people);
+            }
+            var plans = selectedMealPlans();
+            var hasMeal = plans.length > 0;
+            var transportExtra = transportInput.value === 'Flight' ? 8500 : (transportInput.value === 'Train' ? 2000 : 0);
+            var mealPlanExtra = 0;
+            if (plans.indexOf('FULL_DAY') >= 0) {
+                mealPlanExtra = mealPlanPrices.FULL_DAY;
+            } else {
+                plans.forEach(function (plan) {
+                    mealPlanExtra += mealPlanPrices[plan] || 0;
+                });
+            }
+            var selectedRows = parseFoodRows();
+            var foodComboExtra = selectedRows.reduce(function (sum, row) {
+                return sum + (row.combo.price * row.qty);
+            }, 0);
+            var foodExtra = mealPlanExtra + foodComboExtra;
+            var guideExtra = guideInput.checked ? 1800 : 0;
 
-            var totalPerPerson = basePrice + transportExtra + foodExtra + guideExtra;
-            var finalTotal = totalPerPerson * people;
+            var subtotalPerPerson = basePrice + transportExtra + foodExtra + guideExtra;
+            var subtotal = subtotalPerPerson * people;
+            var discountAmount = isGroup ? Math.round(subtotal * 0.12) : 0;
+            var finalTotal = subtotal - discountAmount;
 
-            transportExtraText.textContent = '$' + transportExtra;
-            foodExtraText.textContent = '$' + foodExtra;
-            guideExtraText.textContent = '$' + guideExtra;
+            transportExtraText.textContent = '₹' + inrFormatter.format(transportExtra);
+            foodExtraText.textContent = '₹' + inrFormatter.format(foodExtra);
+            guideExtraText.textContent = '₹' + inrFormatter.format(guideExtra);
+            groupDiscountText.textContent = '-₹' + inrFormatter.format(discountAmount);
+            tourTypeText.textContent = isGroup ? 'Group (12% Off)' : 'Private';
+            if (!hasMeal) {
+                foodDetailText.textContent = 'No Meal Plan';
+            } else {
+                var mealLabel = plans.map(function (plan) { return mealLabels[plan]; }).join(', ');
+                var comboLabel = selectedRows.length ? selectedRows.map(function (row) {
+                    var prefLabel = row.preference === 'NON_VEG' ? 'Non-Veg' : 'Veg';
+                    return row.qty + 'x ' + prefLabel + ' ' + row.combo.name;
+                }).join(', ') : 'No Dish';
+                foodDetailText.textContent = mealLabel + ' | ' + comboLabel;
+            }
             peopleCountText.textContent = people;
-            totalPrice.textContent = '$' + finalTotal;
+            subtotalText.textContent = '₹' + inrFormatter.format(subtotal);
+            invoiceTotalText.textContent = '₹' + inrFormatter.format(finalTotal);
+            totalPrice.textContent = '₹' + inrFormatter.format(finalTotal);
         }
 
         peopleInput.addEventListener('input', calculate);
+        tourTypeInput.addEventListener('change', function() {
+            updateTourTypeConstraints();
+            calculate();
+        });
         transportInput.addEventListener('change', calculate);
-        foodInput.addEventListener('change', calculate);
+        if (mealPlanOptions) {
+            mealPlanOptions.addEventListener('change', function (event) {
+                var target = event.target;
+                if (!target || target.type !== 'checkbox') {
+                    return;
+                }
+
+                if (target.value === 'FULL_DAY' && target.checked) {
+                    mealPlanOptions.querySelectorAll('input[type="checkbox"]').forEach(function (check) {
+                        if (check.value !== 'FULL_DAY') {
+                            check.checked = false;
+                        }
+                    });
+                } else if (target.value !== 'FULL_DAY' && target.checked) {
+                    var fullDayInput = mealPlanOptions.querySelector('input[value="FULL_DAY"]');
+                    if (fullDayInput) {
+                        fullDayInput.checked = false;
+                    }
+                }
+
+                normalizeFoodSelection();
+                calculate();
+            });
+        }
+        if (foodComboGrid) {
+            foodComboGrid.addEventListener('click', function (event) {
+                var btn = event.target.closest('.qty-btn');
+                if (!btn) {
+                    return;
+                }
+                var code = btn.getAttribute('data-code');
+                var preference = btn.getAttribute('data-pref');
+                var action = btn.getAttribute('data-action');
+                var currentQty = getSelectedQty(code, preference);
+                if (action === 'inc') {
+                    var mealKey = getMealKeyForComboCode(code);
+                    var mealPlateCount = getMealPlateCount(mealKey);
+                    if (mealPlateCount >= maxPlatesPerMealPerTraveller) {
+                        alert('Max ' + maxPlatesPerMealPerTraveller + ' plates allowed for ' + mealLabels[mealKey] + ' per traveller.');
+                        return;
+                    }
+                }
+                var nextQty = action === 'inc' ? currentQty + 1 : currentQty - 1;
+                setSelectedQty(code, preference, nextQty);
+                updateFoodCardState();
+                calculate();
+            });
+        }
         guideInput.addEventListener('change', calculate);
 
         if (dateInput) {
             var today = new Date().toISOString().split('T')[0];
             dateInput.setAttribute('min', today);
         }
+        normalizeFoodSelection();
+        updateSelectionHints();
         calculate();
     });
 </script>

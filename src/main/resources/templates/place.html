@@ -99,6 +99,59 @@
             line-height: 1.75;
         }
 
+        .itinerary-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .itinerary-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 999px;
+            border: 1px solid rgba(13, 110, 253, 0.22);
+            background: #f4f8ff;
+            color: #0f4c81;
+            font-size: 0.82rem;
+            padding: 6px 12px;
+            font-weight: 700;
+        }
+
+        .itinerary-timeline {
+            display: grid;
+            gap: 14px;
+        }
+
+        .day-card {
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 14px;
+            padding: 14px;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+        }
+
+        .day-title {
+            font-weight: 800;
+            color: #0f4c81;
+            margin-bottom: 6px;
+            letter-spacing: 0.01em;
+        }
+
+        .day-desc {
+            color: #334155;
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+
+        .itinerary-summary {
+            margin-top: 14px;
+            border-radius: 12px;
+            border: 1px dashed rgba(25, 135, 84, 0.35);
+            background: #f5fff8;
+            padding: 12px;
+        }
+
         .book-panel {
             position: sticky;
             top: 95px;
@@ -110,6 +163,7 @@
             font-weight: 800;
             color: #198754;
             line-height: 1;
+            font-variant-numeric: tabular-nums;
         }
 
         .check-list {
@@ -209,9 +263,10 @@
         <div class="col-lg-8">
             <div class="panel itinerary-panel mb-4">
                 <h4 class="fw-bold mb-3">Day-by-Day Itinerary</h4>
-                <pre class="itinerary-content" th:text="${place != null ? place.itinerary : 'No itinerary details found for this destination.'}">
-Loading itinerary...
-                </pre>
+                <div class="itinerary-meta" id="itineraryMeta"></div>
+                <div class="itinerary-timeline" id="itineraryTimeline"></div>
+                <div class="itinerary-summary d-none" id="itinerarySummary"></div>
+                <pre class="itinerary-content d-none" id="itineraryFallback" th:text="${itineraryText}">Loading itinerary...</pre>
             </div>
 
             <div class="panel p-4">
@@ -238,7 +293,7 @@ Loading itinerary...
         <div class="col-lg-4">
             <aside class="panel book-panel">
                 <p class="text-uppercase text-muted small mb-1">Package Price</p>
-                <div class="book-price">$<span th:text="${place != null ? place.price : '399'}">399</span></div>
+                    <div class="book-price">₹<span th:text="${#numbers.formatDecimal(place != null ? place.price : 24999, 1, 'COMMA', 0, 'POINT')}">24,999</span></div>
                 <p class="text-muted small">Per person, inclusive of standard taxes</p>
 
                 <div class="d-flex align-items-center gap-2 mb-3">
@@ -267,5 +322,100 @@ Loading itinerary...
     </div>
 </div>
 </div>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var rawText = /*[[${itineraryText}]]*/ '';
+        var timeline = document.getElementById('itineraryTimeline');
+        var meta = document.getElementById('itineraryMeta');
+        var summary = document.getElementById('itinerarySummary');
+        var fallback = document.getElementById('itineraryFallback');
+
+        if (!timeline || !meta || !summary || !fallback) {
+            return;
+        }
+
+        function createMetaPill(iconClass, text) {
+            var pill = document.createElement('span');
+            pill.className = 'itinerary-pill';
+            var icon = document.createElement('i');
+            icon.className = iconClass;
+            var label = document.createElement('span');
+            label.textContent = text;
+            pill.appendChild(icon);
+            pill.appendChild(label);
+            return pill;
+        }
+
+        function createDayCard(title, desc) {
+            var card = document.createElement('article');
+            card.className = 'day-card';
+
+            var h = document.createElement('h6');
+            h.className = 'day-title';
+            h.textContent = title;
+
+            var p = document.createElement('p');
+            p.className = 'day-desc';
+            p.textContent = desc;
+
+            card.appendChild(h);
+            card.appendChild(p);
+            return card;
+        }
+
+        var normalized = (rawText || '').replace(/\r/g, '').trim();
+        if (!normalized) {
+            fallback.classList.remove('d-none');
+            fallback.textContent = 'No itinerary details found for this destination.';
+            return;
+        }
+
+        var lines = normalized.split('\n').map(function (line) { return line.trim(); }).filter(Boolean);
+        var dayItems = [];
+        var includesLine = '';
+        var priceLine = '';
+
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            if (/^Day\s*\d+\s*:/i.test(line)) {
+                var parts = line.split(':');
+                var title = parts.shift() || 'Day';
+                var desc = parts.join(':').trim();
+                dayItems.push({ title: title.trim(), desc: desc || 'Explore top highlights and local experiences.' });
+            } else if (/^Includes\s*:/i.test(line)) {
+                includesLine = line;
+            } else if (/^Price\s*:/i.test(line)) {
+                priceLine = line;
+            }
+        }
+
+        if (dayItems.length > 0) {
+            meta.appendChild(createMetaPill('fas fa-route', dayItems.length + ' day plan'));
+            if (priceLine) {
+                meta.appendChild(createMetaPill('fas fa-indian-rupee-sign', priceLine.replace(/^Price\s*:/i, '').trim()));
+            }
+
+            dayItems.forEach(function (item) {
+                timeline.appendChild(createDayCard(item.title, item.desc));
+            });
+
+            if (includesLine || priceLine) {
+                summary.classList.remove('d-none');
+                var summaryText = [];
+                if (includesLine) {
+                    summaryText.push(includesLine);
+                }
+                if (priceLine) {
+                    summaryText.push(priceLine);
+                }
+                summary.textContent = summaryText.join(' | ');
+            }
+        } else {
+            fallback.classList.remove('d-none');
+            fallback.textContent = normalized;
+        }
+    });
+</script>
 </body>
 </html>

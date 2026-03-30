@@ -955,3 +955,129 @@
     font-weight: 600;
     color: #334155;
 }
+
+.auth-page {
+    min-height: calc(100vh - 180px);
+    display: grid;
+    place-items: center;
+    padding: 24px 12px;
+}
+
+.auth-shell {
+    width: 100%;
+    max-width: 460px;
+    border-radius: 22px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 24px 50px rgba(15, 23, 42, 0.18);
+    backdrop-filter: blur(10px);
+}
+
+.auth-shell.auth-shell-wide {
+    max-width: 500px;
+}
+
+.auth-page.login {
+    background:
+        linear-gradient(140deg, rgba(15, 23, 42, 0.4), rgba(13, 110, 253, 0.24)),
+        url('https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=2070') center/cover;
+}
+
+.auth-page.signup {
+    background:
+        linear-gradient(145deg, rgba(15, 23, 42, 0.45), rgba(25, 135, 84, 0.2)),
+        url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1935') center/cover;
+}
+
+.auth-title {
+    font-size: clamp(1.6rem, 3.6vw, 2rem);
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.auth-page .form-control {
+    border-radius: 12px;
+    min-height: 46px;
+    border-color: rgba(100, 116, 139, 0.35);
+}
+
+.booking-confirm-page .confirm-shell {
+    max-width: 640px;
+    margin: 30px auto;
+    background: #fff;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 22px;
+    box-shadow: 0 24px 48px rgba(15, 23, 42, 0.14);
+    overflow: hidden;
+}
+
+.booking-confirm-page .confirm-head {
+    text-align: center;
+    padding: 26px 22px;
+    background: linear-gradient(120deg, #0f172a, #0d6efd);
+    color: #fff;
+}
+
+.booking-confirm-page .confirm-head h1 {
+    font-size: clamp(1.5rem, 3.6vw, 2.1rem);
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.booking-confirm-page .confirm-body {
+    padding: 24px;
+}
+
+.booking-confirm-page .confirm-price {
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+    font-weight: 800;
+    color: #198754;
+    margin-bottom: 4px;
+}
+
+.payment-page .payment-shell {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.payment-page .payment-head {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.payment-page .payment-head h1 {
+    font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.payment-page .payment-summary-card,
+.payment-page .payment-method-card {
+    background: #fff;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 18px;
+    box-shadow: 0 18px 34px rgba(15, 23, 42, 0.1);
+}
+
+.payment-page .payment-summary-card {
+    padding: 20px;
+}
+
+.payment-page .payment-method-card {
+    padding: 22px;
+}
+
+.payment-page .payment-total {
+    font-size: clamp(1.8rem, 3vw, 2.3rem);
+    font-weight: 800;
+    color: #198754;
+}
+
+.payment-page .payment-upi-block {
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 14px;
+    background: #f8fbff;
+    padding: 14px;
+}

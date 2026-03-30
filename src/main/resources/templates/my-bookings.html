@@ -33,7 +33,9 @@
                         <th class="ps-4">Trip ID</th>
                         <th>Destination</th>
                         <th>Date</th>
+                        <th>Tour</th>
                         <th>Transport</th>
+                        <th>Payment</th>
                         <th>Total</th>
                         <th class="text-center pe-4">Action</th>
                     </tr>
@@ -49,10 +51,25 @@
                         </td>
                         <td th:text="${b.travelDate}">2026-01-01</td>
                         <td>
+                            <span class="badge bg-light text-dark border" th:text="${b.tourType != null ? b.tourType : 'PRIVATE'}">PRIVATE</span>
+                        </td>
+                        <td>
                             <span class="badge transport-badge" th:text="${b.transportType}">Bus</span>
                         </td>
-                        <td class="fw-bold text-success">$<span th:text="${b.totalPrice}">399</span></td>
+                        <td>
+                            <div class="small">
+                                <div><strong th:text="${b.paymentMethod != null ? b.paymentMethod : 'UNPAID'}">UNPAID</strong></div>
+                                <div class="text-muted" th:text="${b.paymentStatus != null ? b.paymentStatus : 'PENDING'}">PENDING</div>
+                                <div class="text-muted" th:text="${foodSummaryByBookingId != null && foodSummaryByBookingId.get(b.id) != null ? foodSummaryByBookingId.get(b.id) : 'No Meal Plan'}">No Meal Plan</div>
+                            </div>
+                        </td>
+                        <td class="fw-bold text-success">₹<span th:text="${#numbers.formatDecimal(b.totalPrice, 1, 'COMMA', 0, 'POINT')}">24,999</span></td>
                         <td class="text-center pe-4">
+                            <a th:if="${b.paymentStatus == null || b.paymentStatus != 'PAID'}"
+                               th:href="@{/payment/{id}(id=${b.id})}"
+                               class="btn btn-sm btn-primary rounded-pill px-3 me-1">
+                                <i class="fas fa-credit-card me-1"></i> Pay Now
+                            </a>
                             <a th:href="@{/booking/cancel/{id}(id=${b.id})}"
                                class="btn btn-sm btn-outline-danger rounded-pill px-3"
                                onclick="return confirm('Are you sure you want to cancel this trip?')">

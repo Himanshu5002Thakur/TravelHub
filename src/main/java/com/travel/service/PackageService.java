@@ -52,7 +52,7 @@ public class PackageService {
                     "\n\nDay 1: Arrival and welcome tour." +
                     "\nDay 2: Explore main attractions." +
                     "\nDay 3: Free time and departure." +
-                    "\n\nPrice: $400/person (includes meals & transport).";
+                    "\n\nPrice: ₹25,000/person (includes meals & transport).";
         }
     }
 }

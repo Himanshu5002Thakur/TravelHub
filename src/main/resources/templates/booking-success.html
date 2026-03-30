@@ -31,11 +31,23 @@
                         <small class="text-muted d-block">Travel Date</small>
                         <strong th:text="${booking.travelDate}">2026-01-01</strong>
                     </div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Tour Type</small>
+                        <strong th:text="${booking.tourType != null ? booking.tourType : 'PRIVATE'}">PRIVATE</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block">Food Option</small>
+                        <strong th:text="${foodSummaryDisplay}">No Meal Plan</strong>
+                    </div>
                 </div>
             </div>
 
             <div class="price-chip mt-3 mb-4">
-                Total Paid: $<span th:text="${booking.totalPrice}">399</span>
+                Total Paid: ₹<span th:text="${#numbers.formatDecimal(booking.totalPrice, 1, 'COMMA', 0, 'POINT')}">24,999</span>
+            </div>
+
+            <div class="alert alert-success py-2" role="alert">
+                <strong>Instant confirmation generated.</strong> Your booking is active now.
             </div>
 
             <p class="text-muted mb-4">

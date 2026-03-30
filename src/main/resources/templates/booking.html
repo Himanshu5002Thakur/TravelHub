@@ -7,64 +7,36 @@ th:replace="~{base :: layout(~{::title},~{::body})}">
 </head>
 
 <body>
+<div class="booking-confirm-page">
+<div class="container py-4 pb-5">
+	<div class="confirm-shell">
+		<div class="confirm-head">
+			<h1><i class="fas fa-check-circle me-2"></i>Confirm Your Booking</h1>
+			<p class="mb-0 text-white-50">Review your trip summary and continue to secure payment.</p>
+		</div>
 
-<div class="text-center mb-4">
+		<div class="confirm-body text-center">
+			<div class="mb-2 text-muted small text-uppercase">Destination</div>
+			<h3 class="text-primary fw-bold mb-2" th:text="${place}">Place</h3>
 
-<h1 class="text-success fw-bold">
-<i class="fas fa-check-circle"></i> Confirm Your Booking
-</h1>
+			<p class="text-muted mb-2">5 Days / 4 Nights Premium Package</p>
+			<div class="confirm-price">₹24,999</div>
+			<p class="text-muted mb-4">Per Person</p>
 
-<p class="text-muted">
-You are booking a travel package for
-<strong th:text="${place}">Place</strong>
-</p>
-
+			<div class="d-grid gap-2">
+				<button class="btn btn-warning w-100 fw-bold">
+					<i class="fas fa-credit-card me-1"></i> Pay Now
+				</button>
+				<button class="btn btn-success w-100 fw-bold">
+					<i class="fas fa-check me-1"></i> Confirm Booking
+				</button>
+				<a th:href="@{/home}" class="btn btn-outline-secondary w-100">
+					Back to Home
+				</a>
+			</div>
+		</div>
+	</div>
 </div>
-
-<div class="row justify-content-center">
-
-<div class="col-md-6">
-
-<div class="card shadow border-0">
-
-<div class="card-header bg-success text-white text-center">
-<h5>Package Summary</h5>
-</div>
-
-<div class="card-body text-center">
-
-<h3 class="text-primary" th:text="${place}"></h3>
-
-<p class="text-muted">
-5 Days / 4 Nights Travel Package
-</p>
-
-<h2 class="text-success fw-bold">
-$399
-</h2>
-
-<p class="text-muted">Per Person</p>
-
-<hr>
-
-<button class="btn btn-warning w-100 mb-3">
-<i class="fas fa-credit-card"></i> Pay Now
-</button>
-
-<button class="btn btn-success w-100">
-<i class="fas fa-check"></i> Confirm Booking
-</button>
-
-<a th:href="@{/home}" class="btn btn-outline-secondary w-100 mt-3">
-Back to Home
-</a>
-
-</div>
-
-</div>
-
-</div>
-
 </div>
 
 </body>

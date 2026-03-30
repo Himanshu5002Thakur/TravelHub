@@ -2,14 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::title},~{::body})}">
 <head><title>Login | TravelHub</title></head>
 <body>
-    <div class="d-flex align-items-center justify-content-center" 
-         style="min-height: 80vh; background: url('https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=2070') center/cover;">
-        
-        <div class="card p-4 shadow-lg border-0" 
-             style="width: 400px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 20px;">
-            
-            <div class="card-body">
-                <h2 class="text-center fw-bold text-primary mb-4">Welcome Back</h2>
+    <div class="auth-page login">
+        <div class="auth-shell">
+            <div>
+                <h2 class="auth-title text-center text-primary">Welcome Back</h2>
                 
                 <form th:action="@{/login}" method="post">
     <div class="mb-3">
@@ -23,7 +19,7 @@
         <input type="password" name="password" class="form-control" placeholder="••••••••"
                minlength="8" maxlength="64" required>
     </div>
-    <button type="submit" class="btn btn-primary w-100 py-2">Login</button>
+    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Login</button>
 </form>
 
                 <div th:if="${param.error}" class="alert alert-danger mt-3 small p-2 text-center">Invalid email or password</div>
