@@ -413,7 +413,7 @@
 
         <h1 class="hero-title">Premium Journeys, Built Around You</h1>
         <p class="hero-subtitle">
-            Curated itineraries, verified stays, and expert guides across India, USA, Canada and beyond.
+            Curated itineraries, verified stays, and expert guides across India, United States, Canada and beyond.
             Start your next unforgettable trip in seconds.
         </p>
 
@@ -469,7 +469,7 @@
                 <span class="slide-chip">Urban Signature Escape</span>
                 <h2>New York City, USA</h2>
                 <p>From Times Square lights to skyline cruises, discover premium city life at full speed.</p>
-                <a th:href="@{/country/{country}(country='US')}" class="slider-cta">Explore NYC</a>
+                <a th:href="@{/country/{country}(country='United States')}" class="slider-cta">Explore NYC</a>
             </div>
         </div>
 
@@ -544,8 +544,9 @@
     <div class="row g-4">
         <div th:each="country : ${countries}" class="col-sm-6 col-lg-3">
             <div class="destination-card card">
-                <div class="destination-thumb">
-                    <img th:src="@{'/images/' + ${country.toLowerCase().replace(' ','')} + '.jpg'}"
+                <div class="destination-thumb"
+                     th:with="countryImage=${#strings.equalsIgnoreCase(country, 'United States') ? 'us' : (#strings.equalsIgnoreCase(country, 'United Kingdom') ? 'uk' : country.toLowerCase().replace(' ', ''))}">
+                    <img th:src="@{'/images/' + ${countryImage} + '.jpg'}"
                          onerror="this.onerror=null;this.src='/images/travel-banner.jpg';"
                          alt="Destination image">
                     <span class="rating-badge">

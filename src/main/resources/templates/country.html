@@ -93,17 +93,18 @@
 
         .price-pill {
             display: inline-flex;
-            align-items: baseline;
+            align-items: center;
             justify-content: center;
-            gap: 2px;
+            gap: 6px;
             border-radius: 999px;
             background: #edf4ff;
             color: #0b3f8a;
             font-weight: 700;
-            padding: 5px 11px;
+            padding: 7px 14px;
             font-size: 0.88rem;
-            min-width: 170px;
+            min-width: 210px;
             font-variant-numeric: tabular-nums;
+            white-space: nowrap;
         }
 
         .empty-state {
@@ -178,10 +179,7 @@
                     </p>
 
                     <div class="mb-3">
-                        <span class="price-pill">
-                            ₹<span th:text="${#numbers.formatDecimal(place.price, 1, 'COMMA', 0, 'POINT')}">24,999</span>
-                            <small class="text-muted ms-1">per person</small>
-                        </span>
+                        <span class="price-pill">₹<span th:text="${#numbers.formatDecimal(place.price, 1, 'COMMA', 0, 'POINT')}">25,000</span> per person</span>
                     </div>
 
                     <a th:href="@{/place/{id}(id=${place.name})}" class="btn btn-primary w-100 rounded-pill fw-semibold">

@@ -466,8 +466,8 @@
                                 <label class="field-label" for="transport">Transport</label>
                                 <select name="transport" id="transport" class="form-select">
                                     <option value="Bus">Bus (Included)</option>
-                                    <option value="Train">Train (+₹2,000)</option>
-                                    <option value="Flight">Flight (+₹8,500)</option>
+                                    <option value="Train">Train (+₹800)</option>
+                                    <option value="Flight">Flight (+₹3,000)</option>
                                 </select>
                             </div>
 
@@ -481,28 +481,28 @@
                                         <input type="checkbox" value="BREAKFAST">
                                         <span>
                                             <span class="meal-plan-name">Breakfast</span>
-                                            <span class="meal-plan-price">+₹500</span>
+                                            <span class="meal-plan-price">+₹180</span>
                                         </span>
                                     </label>
                                     <label class="meal-plan-option" data-plan="LUNCH">
                                         <input type="checkbox" value="LUNCH">
                                         <span>
                                             <span class="meal-plan-name">Lunch</span>
-                                            <span class="meal-plan-price">+₹550</span>
+                                            <span class="meal-plan-price">+₹260</span>
                                         </span>
                                     </label>
                                     <label class="meal-plan-option" data-plan="DINNER">
                                         <input type="checkbox" value="DINNER">
                                         <span>
                                             <span class="meal-plan-name">Dinner</span>
-                                            <span class="meal-plan-price">+₹650</span>
+                                            <span class="meal-plan-price">+₹280</span>
                                         </span>
                                     </label>
                                     <label class="meal-plan-option" data-plan="FULL_DAY">
                                         <input type="checkbox" value="FULL_DAY">
                                         <span>
                                             <span class="meal-plan-name">Full Day</span>
-                                            <span class="meal-plan-price">+₹1,800</span>
+                                            <span class="meal-plan-price">+₹650</span>
                                         </span>
                                     </label>
                                 </div>
@@ -515,7 +515,8 @@
                                     <h6 class="section-title">Food Selection</h6>
                                     <span class="section-hint" id="dishSelectionHint">No dishes selected</span>
                                 </div>
-                                <small class="text-muted d-block mb-2">Choose separate plate count for Veg and Non-Veg. You can mix both across lunch and dinner. Max 6 plates per meal per traveller.</small>
+                                <small class="text-muted d-block mb-1">Choose separate plate count for Veg and Non-Veg. You can mix both across lunch and dinner.</small>
+                                <small class="text-muted d-block mb-2" id="mealLimitHint">Max 6 plates per meal for 1 traveller (6 per traveller).</small>
                                 <input type="hidden" name="foodPreference" id="foodPreference" value="MIXED">
                                 <input type="hidden" name="foodCombo" id="foodCombo" value="NONE">
                                 <label class="field-label">Dish Selection</label>
@@ -524,7 +525,7 @@
 
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="guide" id="guide">
-                                <label class="form-check-label" for="guide">Local Guide (+₹1,800 per traveler)</label>
+                                <label class="form-check-label" for="guide">Local Guide (+₹700 per traveler)</label>
                             </div>
                         </div>
 
@@ -547,12 +548,12 @@
 
                     <aside class="summary-card sticky-right">
                         <p class="text-uppercase small text-muted mb-2">Estimated Total</p>
-                        <div class="price-value" id="totalPrice">₹<span th:text="${#numbers.formatDecimal(basePrice, 1, 'COMMA', 0, 'POINT')}">24,999</span></div>
+                        <div class="price-value" id="totalPrice">₹<span th:text="${#numbers.formatDecimal(basePrice, 1, 'COMMA', 0, 'POINT')}">25,000</span></div>
                         <p class="small text-muted">Price updates live as you customize your package.</p>
 
                         <hr>
 
-                            <div class="service-line"><span>Base package</span><strong>₹<span th:text="${#numbers.formatDecimal(basePrice, 1, 'COMMA', 0, 'POINT')}">24,999</span></strong></div>
+                            <div class="service-line"><span>Base package</span><strong>₹<span th:text="${#numbers.formatDecimal(basePrice, 1, 'COMMA', 0, 'POINT')}">25,000</span></strong></div>
                         <div class="service-line"><span>Tour type</span><strong id="tourTypeText">Private</strong></div>
                         <div class="service-line"><span>Transport extra</span><strong id="transportExtra">₹0</strong></div>
                         <div class="service-line"><span>Food option</span><strong id="foodExtra">₹0</strong></div>
@@ -580,7 +581,7 @@
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
-        var basePrice = /*[[${basePrice}]]*/ 24999;
+        var basePrice = /*[[${basePrice}]]*/ 25000;
         var inrFormatter = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
         var peopleInput = document.getElementById('people');
         var tourTypeInput = document.getElementById('tourType');
@@ -602,34 +603,34 @@
         };
 
         var mealPlanPrices = {
-            BREAKFAST: 500,
-            LUNCH: 550,
-            DINNER: 650,
-            FULL_DAY: 1800
+            BREAKFAST: 180,
+            LUNCH: 260,
+            DINNER: 280,
+            FULL_DAY: 650
         };
 
         var maxPlatesPerMealPerTraveller = 6;
 
         var comboCatalog = {
             BREAKFAST: [
-                { code: 'BF_CLASSIC', name: 'Classic Idli Plate', price: 350, image: '/images/Classic%20Idli%20Plate.jpg', nonVegImage: '/images/nonveg-Classic%20Idli%20Plate.avif', tag: 'Breakfast' },
-                { code: 'BF_NORTH', name: 'Paratha and Curd', price: 390, image: '/images/Paratha%20and%20Curd.jpg', nonVegImage: '/images/nonveg-Paratha%20and%20Curd.webp', tag: 'Breakfast' },
-                { code: 'BF_HEALTH', name: 'Healthy Bowl', price: 430, image: '/images/Healthy%20Bowl.jpg', nonVegImage: '/images/nonveg-Healthy%20Bowl.jpg', tag: 'Breakfast' }
+                { code: 'BF_CLASSIC', name: 'Classic Idli Plate', price: 120, image: '/images/Classic%20Idli%20Plate.jpg', nonVegImage: '/images/nonveg-Classic%20Idli%20Plate.avif', tag: 'Breakfast' },
+                { code: 'BF_NORTH', name: 'Paratha and Curd', price: 150, image: '/images/Paratha%20and%20Curd.jpg', nonVegImage: '/images/nonveg-Paratha%20and%20Curd.webp', tag: 'Breakfast' },
+                { code: 'BF_HEALTH', name: 'Healthy Bowl', price: 170, image: '/images/Healthy%20Bowl.jpg', nonVegImage: '/images/nonveg-Healthy%20Bowl.jpg', tag: 'Breakfast' }
             ],
             LUNCH: [
-                { code: 'LD_THALI', name: 'Regional Thali', price: 680, image: '/images/Regional%20Thali.jpg', nonVegImage: '/images/nonveg-Regional%20Thali.webp', tag: 'Lunch' },
-                { code: 'LD_TANDOOR', name: 'Tandoor Grill Platter', price: 820, image: '/images/Tandoor%20Grill%20Platter.jpg', nonVegImage: '/images/nonveg-Tandoor%20Grill%20Platter.jpg', tag: 'Lunch' },
-                { code: 'LD_CONTINENTAL', name: 'Continental Bowl', price: 740, image: '/images/Continental%20Bowl.jpg', nonVegImage: '/images/nonveg-Continental%20Bowl.png', tag: 'Lunch' }
+                { code: 'LD_THALI', name: 'Regional Thali', price: 260, image: '/images/Regional%20Thali.jpg', nonVegImage: '/images/nonveg-Regional%20Thali.webp', tag: 'Lunch' },
+                { code: 'LD_TANDOOR', name: 'Tandoor Grill Platter', price: 320, image: '/images/Tandoor%20Grill%20Platter.jpg', nonVegImage: '/images/nonveg-Tandoor%20Grill%20Platter.jpg', tag: 'Lunch' },
+                { code: 'LD_CONTINENTAL', name: 'Continental Bowl', price: 290, image: '/images/Continental%20Bowl.jpg', nonVegImage: '/images/nonveg-Continental%20Bowl.png', tag: 'Lunch' }
             ],
             DINNER: [
-                { code: 'DN_THALI', name: 'Soup and Salad Platter', price: 620, image: '/images/Continental%20Bowl.jpg', nonVegImage: '/images/nonveg-Continental%20Bowl.png', tag: 'Dinner' },
-                { code: 'DN_TANDOOR', name: 'Signature Dinner Biryani', price: 860, image: '/images/Tandoor%20Grill%20Platter.jpg', nonVegImage: '/images/nonveg-Tandoor%20Grill%20Platter.jpg', tag: 'Dinner' },
-                { code: 'DN_CONTINENTAL', name: 'Dinner with Dessert', price: 760, image: '/images/Regional%20Thali.jpg', nonVegImage: '/images/nonveg-Regional%20Thali.webp', tag: 'Dinner' }
+                { code: 'DN_THALI', name: 'Soup and Salad Platter', price: 240, image: '/images/Continental%20Bowl.jpg', nonVegImage: '/images/nonveg-Continental%20Bowl.png', tag: 'Dinner' },
+                { code: 'DN_TANDOOR', name: 'Signature Dinner Biryani', price: 330, image: '/images/Tandoor%20Grill%20Platter.jpg', nonVegImage: '/images/nonveg-Tandoor%20Grill%20Platter.jpg', tag: 'Dinner' },
+                { code: 'DN_CONTINENTAL', name: 'Dinner with Dessert', price: 300, image: '/images/Regional%20Thali.jpg', nonVegImage: '/images/nonveg-Regional%20Thali.webp', tag: 'Dinner' }
             ],
             FULL_DAY: [
-                { code: 'FD_BALANCED', name: 'Balanced Full Day', price: 1050, image: '/images/Balanced%20Full%20Day.jpg', nonVegImage: '/images/nonveg-Balanced%20Full%20Day.jpg', tag: 'Full Day' },
-                { code: 'FD_PREMIUM', name: 'Premium Full Day', price: 1450, image: '/images/Premium%20Full%20Day.jpg', nonVegImage: '/images/nonveg-Premium%20Full%20Day.jpg', tag: 'Full Day' },
-                { code: 'FD_KIDS', name: 'Kids Friendly Full Day', price: 910, image: '/images/Kids%20Friendly%20Full%20Day.jpg', nonVegImage: '/images/nonveg-Kids%20Friendly%20Full%20Day.jpg', tag: 'Full Day' }
+                { code: 'FD_BALANCED', name: 'Balanced Full Day', price: 450, image: '/images/Balanced%20Full%20Day.jpg', nonVegImage: '/images/nonveg-Balanced%20Full%20Day.jpg', tag: 'Full Day' },
+                { code: 'FD_PREMIUM', name: 'Premium Full Day', price: 620, image: '/images/Premium%20Full%20Day.jpg', nonVegImage: '/images/nonveg-Premium%20Full%20Day.jpg', tag: 'Full Day' },
+                { code: 'FD_KIDS', name: 'Kids Friendly Full Day', price: 390, image: '/images/Kids%20Friendly%20Full%20Day.jpg', nonVegImage: '/images/nonveg-Kids%20Friendly%20Full%20Day.jpg', tag: 'Full Day' }
             ]
         };
 
@@ -645,6 +646,7 @@
         var invoiceTotalText = document.getElementById('invoiceTotalText');
         var mealSelectionHint = document.getElementById('mealSelectionHint');
         var dishSelectionHint = document.getElementById('dishSelectionHint');
+        var mealLimitHint = document.getElementById('mealLimitHint');
         var foodSelectionState = parseFoodSelectionState(foodComboInput ? foodComboInput.value : 'NONE');
 
         function parseCsv(value) {
@@ -843,6 +845,62 @@
             return total;
         }
 
+        function getPeopleCountForLimits() {
+            var isGroup = tourTypeInput.value === 'GROUP';
+            var minPeople = isGroup ? 2 : 1;
+            return Math.max(minPeople, parseInt(peopleInput.value || '1', 10));
+        }
+
+        function getMealPlateLimitForBooking() {
+            return maxPlatesPerMealPerTraveller * getPeopleCountForLimits();
+        }
+
+        function updateMealLimitHint() {
+            if (!mealLimitHint) {
+                return;
+            }
+            var travellers = getPeopleCountForLimits();
+            var limit = getMealPlateLimitForBooking();
+            mealLimitHint.textContent = 'Max ' + limit + ' plates per meal for ' + travellers + ' traveller' + (travellers > 1 ? 's' : '') + ' (' + maxPlatesPerMealPerTraveller + ' per traveller).';
+        }
+
+        function enforceMealPlateLimits() {
+            var mealTotals = {};
+            var changed = false;
+            var limit = getMealPlateLimitForBooking();
+
+            Object.keys(foodSelectionState).forEach(function (key) {
+                var comboCode = key.split('|')[0];
+                var mealKey = getMealKeyForComboCode(comboCode);
+                if (!mealKey) {
+                    return;
+                }
+
+                var qty = foodSelectionState[key] || 0;
+                var used = mealTotals[mealKey] || 0;
+                var available = limit - used;
+
+                if (available <= 0) {
+                    delete foodSelectionState[key];
+                    changed = true;
+                    return;
+                }
+
+                if (qty > available) {
+                    foodSelectionState[key] = available;
+                    changed = true;
+                    qty = available;
+                }
+
+                mealTotals[mealKey] = used + qty;
+            });
+
+            if (changed) {
+                syncFoodHiddenInput();
+            }
+            return changed;
+        }
+
         function resolveComboImage(combo, vegQty, nonVegQty) {
             if (!combo) {
                 return '/images/travel-banner.jpg';
@@ -962,6 +1020,7 @@
             var plans = selectedMealPlans();
             var hasMeal = plans.length > 0;
             foodDetailBlock.classList.toggle('d-none', !hasMeal);
+            updateMealLimitHint();
             if (!hasMeal) {
                 foodSelectionState = {};
                 foodComboInput.value = 'NONE';
@@ -996,6 +1055,7 @@
                 }
             });
             foodSelectionState = filteredState;
+            enforceMealPlateLimits();
             syncFoodHiddenInput();
             updateFoodCardState();
             updateSelectionHints();
@@ -1018,9 +1078,11 @@
             if (String(peopleInput.value) !== String(people)) {
                 peopleInput.value = String(people);
             }
+            updateMealLimitHint();
+            enforceMealPlateLimits();
             var plans = selectedMealPlans();
             var hasMeal = plans.length > 0;
-            var transportExtra = transportInput.value === 'Flight' ? 8500 : (transportInput.value === 'Train' ? 2000 : 0);
+            var transportExtra = transportInput.value === 'Flight' ? 3000 : (transportInput.value === 'Train' ? 800 : 0);
             var mealPlanExtra = 0;
             if (plans.indexOf('FULL_DAY') >= 0) {
                 mealPlanExtra = mealPlanPrices.FULL_DAY;
@@ -1034,7 +1096,7 @@
                 return sum + (row.combo.price * row.qty);
             }, 0);
             var foodExtra = mealPlanExtra + foodComboExtra;
-            var guideExtra = guideInput.checked ? 1800 : 0;
+            var guideExtra = guideInput.checked ? 700 : 0;
 
             var subtotalPerPerson = basePrice + transportExtra + foodExtra + guideExtra;
             var subtotal = subtotalPerPerson * people;
@@ -1060,6 +1122,8 @@
             subtotalText.textContent = '₹' + inrFormatter.format(subtotal);
             invoiceTotalText.textContent = '₹' + inrFormatter.format(finalTotal);
             totalPrice.textContent = '₹' + inrFormatter.format(finalTotal);
+            updateSelectionHints();
+            updateFoodCardState();
         }
 
         peopleInput.addEventListener('input', calculate);
@@ -1105,8 +1169,9 @@
                 if (action === 'inc') {
                     var mealKey = getMealKeyForComboCode(code);
                     var mealPlateCount = getMealPlateCount(mealKey);
-                    if (mealPlateCount >= maxPlatesPerMealPerTraveller) {
-                        alert('Max ' + maxPlatesPerMealPerTraveller + ' plates allowed for ' + mealLabels[mealKey] + ' per traveller.');
+                    var mealPlateLimit = getMealPlateLimitForBooking();
+                    if (mealPlateCount >= mealPlateLimit) {
+                        alert('Max ' + mealPlateLimit + ' plates allowed for ' + mealLabels[mealKey] + ' in this booking (' + maxPlatesPerMealPerTraveller + ' per traveller).');
                         return;
                     }
                 }

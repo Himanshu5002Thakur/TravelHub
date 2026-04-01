@@ -63,7 +63,7 @@
                                 <div class="text-muted" th:text="${foodSummaryByBookingId != null && foodSummaryByBookingId.get(b.id) != null ? foodSummaryByBookingId.get(b.id) : 'No Meal Plan'}">No Meal Plan</div>
                             </div>
                         </td>
-                        <td class="fw-bold text-success">₹<span th:text="${#numbers.formatDecimal(b.totalPrice, 1, 'COMMA', 0, 'POINT')}">24,999</span></td>
+                        <td class="fw-bold text-success">₹<span th:text="${#numbers.formatDecimal(b.totalPrice, 1, 'COMMA', 0, 'POINT')}">25,000</span></td>
                         <td class="text-center pe-4">
                             <a th:if="${b.paymentStatus == null || b.paymentStatus != 'PAID'}"
                                th:href="@{/payment/{id}(id=${b.id})}"

@@ -11,6 +11,7 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     
     // Finds all places for a specific country (e.g., all 4 places in India)
     List<Place> findByCountryName(String countryName);
+    List<Place> findByCountryNameIgnoreCase(String countryName);
 
     // FIX FOR DUPLICATES: Gets only UNIQUE country names for the Home page
     @Query("SELECT DISTINCT p.countryName FROM Place p")

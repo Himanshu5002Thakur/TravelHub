@@ -130,13 +130,26 @@ private String getCountryTagline(String country) {
     return "Explore premium itineraries across " + country + " with curated stays and local highlights.";
 }
 
+private String normalizeCountryName(String country) {
+    if (country == null) {
+        return "";
+    }
+    String clean = country.trim();
+    if (clean.equalsIgnoreCase("US") || clean.equalsIgnoreCase("USA")) {
+        return "United States";
+    }
+    if (clean.equalsIgnoreCase("UK") || clean.equalsIgnoreCase("U.K.")) {
+        return "United Kingdom";
+    }
+    return clean;
+}
+
     @GetMapping("/country/{country}")
 public String country(@PathVariable String country, Model model) {
-    // Instead of a hardcoded Map, we fetch from the database
-    // For this to work, you'll need a PlaceRepository (shown below)
-    List<Place> places = placeRepo.findByCountryName(country);
+    String normalizedCountry = normalizeCountryName(country);
+    List<Place> places = placeRepo.findByCountryNameIgnoreCase(normalizedCountry);
     
-    model.addAttribute("country", country);
+    model.addAttribute("country", normalizedCountry);
     model.addAttribute("places", places);
     return "country";
 }
@@ -205,7 +218,7 @@ public String place(@PathVariable String placeName, Model model) {
     @GetMapping("/booking/traveller/{place}")
     public String travellerDetails(@PathVariable String place, Model model) {
         Place placeObj = placeRepo.findByNameIgnoreCase(place).orElse(null);
-        double basePrice = (placeObj != null && placeObj.getPrice() != null) ? placeObj.getPrice() : 24999.0;
+        double basePrice = (placeObj != null && placeObj.getPrice() != null) ? placeObj.getPrice() : 25000.0;
         model.addAttribute("place", place);
         model.addAttribute("basePrice", basePrice);
         return "traveller-details";
@@ -418,6 +431,7 @@ public String confirm(@RequestParam String place, @RequestParam String name,
         }
 
         Map<String, Integer> mealWisePlateCounts = new LinkedHashMap<>();
+        int maxPlatesPerMealForBooking = MAX_PLATES_PER_MEAL_PER_TRAVELLER * people;
         for (Map.Entry<String, Integer> comboEntry : selectedFoodCombos.entrySet()) {
             String comboCode = comboEntry.getKey().split(":")[0];
             String mealKey = getMealKeyForComboCode(comboCode);
@@ -426,7 +440,7 @@ public String confirm(@RequestParam String place, @RequestParam String name,
             }
             int updatedQty = mealWisePlateCounts.getOrDefault(mealKey, 0) + comboEntry.getValue();
             mealWisePlateCounts.put(mealKey, updatedQty);
-            if (updatedQty > MAX_PLATES_PER_MEAL_PER_TRAVELLER) {
+            if (updatedQty > maxPlatesPerMealForBooking) {
                 String mealLabel = switch (mealKey) {
                     case "BREAKFAST" -> "Breakfast";
                     case "LUNCH" -> "Lunch";
@@ -434,7 +448,7 @@ public String confirm(@RequestParam String place, @RequestParam String name,
                     case "FULL_DAY" -> "Full Day";
                     default -> "meal";
                 };
-                ra.addFlashAttribute("error", "Max " + MAX_PLATES_PER_MEAL_PER_TRAVELLER + " plates allowed for " + mealLabel + " per traveller.");
+                ra.addFlashAttribute("error", "Max " + maxPlatesPerMealForBooking + " plates allowed for " + mealLabel + " in this booking (" + MAX_PLATES_PER_MEAL_PER_TRAVELLER + " per traveller)." );
                 ra.addAttribute("place", place);
                 return "redirect:/booking/traveller/{place}";
             }
@@ -457,21 +471,21 @@ public String confirm(@RequestParam String place, @RequestParam String name,
 
     // 1. Calculation Logic
     Place placeObj = placeRepo.findByNameIgnoreCase(place).orElse(null);
-    double basePrice = (placeObj != null && placeObj.getPrice() != null) ? placeObj.getPrice() : 24999.0;
-    double transportExtra = transport.equals("Flight") ? 8500.0 : (transport.equals("Train") ? 2000.0 : 0.0);
+    double basePrice = (placeObj != null && placeObj.getPrice() != null) ? placeObj.getPrice() : 25000.0;
+    double transportExtra = transport.equals("Flight") ? 3000.0 : (transport.equals("Train") ? 800.0 : 0.0);
     double mealPlanExtra;
     if (selectedMealPlans.contains("FULL_DAY")) {
-        mealPlanExtra = 1800.0;
+        mealPlanExtra = 650.0;
     } else {
         mealPlanExtra = 0.0;
         if (selectedMealPlans.contains("BREAKFAST")) {
-            mealPlanExtra += 500.0;
+            mealPlanExtra += 180.0;
         }
         if (selectedMealPlans.contains("LUNCH")) {
-            mealPlanExtra += 550.0;
+            mealPlanExtra += 260.0;
         }
         if (selectedMealPlans.contains("DINNER")) {
-            mealPlanExtra += 650.0;
+            mealPlanExtra += 280.0;
         }
     }
     double foodPreferenceExtra = 0.0;
@@ -480,24 +494,24 @@ public String confirm(@RequestParam String place, @RequestParam String name,
         String comboCode = comboEntry.getKey().split(":")[0];
         int comboQty = comboEntry.getValue();
         double comboPrice = switch (comboCode) {
-            case "BF_CLASSIC" -> 350.0;
-            case "BF_NORTH" -> 390.0;
-            case "BF_HEALTH" -> 430.0;
-                case "LD_THALI" -> 680.0;
-                case "LD_TANDOOR" -> 820.0;
-                case "LD_CONTINENTAL" -> 740.0;
-                case "DN_THALI" -> 620.0;
-                case "DN_TANDOOR" -> 860.0;
-                case "DN_CONTINENTAL" -> 760.0;
-            case "FD_BALANCED" -> 1050.0;
-            case "FD_PREMIUM" -> 1450.0;
-            case "FD_KIDS" -> 910.0;
+            case "BF_CLASSIC" -> 120.0;
+            case "BF_NORTH" -> 150.0;
+            case "BF_HEALTH" -> 170.0;
+                case "LD_THALI" -> 260.0;
+                case "LD_TANDOOR" -> 320.0;
+                case "LD_CONTINENTAL" -> 290.0;
+                case "DN_THALI" -> 240.0;
+                case "DN_TANDOOR" -> 330.0;
+                case "DN_CONTINENTAL" -> 300.0;
+            case "FD_BALANCED" -> 450.0;
+            case "FD_PREMIUM" -> 620.0;
+            case "FD_KIDS" -> 390.0;
             default -> 0.0;
         };
         foodComboExtra += comboPrice * comboQty;
     }
     double foodExtra = mealPlanExtra + foodPreferenceExtra + foodComboExtra;
-    double guideExtra = guide ? 1800.0 : 0.0;
+    double guideExtra = guide ? 700.0 : 0.0;
     double subtotal = (basePrice + transportExtra + foodExtra + guideExtra) * people;
     double groupDiscountRate = "GROUP".equals(cleanTourType) ? 0.12 : 0.0;
     double finalPrice = subtotal * (1 - groupDiscountRate);
